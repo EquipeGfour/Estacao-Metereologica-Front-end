@@ -1,12 +1,11 @@
 import { Route, Routes as RoutesWrapper } from "react-router-dom";
-import ListagemEstacao from "../Pages/Admin/ListagemEstacao";
-
+import Home from "../Components/Home";
 
 
 function Routes() {
     return (
         <RoutesWrapper>
-            <Route path="/listagem-estacao" element={< ListagemEstacao />} />
+            <Route path="/" element={< Home />} />
         </RoutesWrapper>
     );
 }
