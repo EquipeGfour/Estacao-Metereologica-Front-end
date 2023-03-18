@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { MultiSelect, MultiSelectChangeEvent } from 'primereact/multiselect';
+import * as S from "./styles";
 import { Button } from 'primereact/button';
 
 interface Paramns {
@@ -33,7 +34,7 @@ function CadastroEstacao() {
     ];
 
     return (
-        <>
+        <S.Container>
             <section>
                 <header>
                     {/* destinado ao cabeçalho */}
@@ -73,8 +74,7 @@ function CadastroEstacao() {
                     </div>
                 </main>
             </section>
-        </>
+        </S.Container>
     )
 }
 export default CadastroEstacao;
-
