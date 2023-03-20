@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { AutoComplete } from "primereact/autocomplete";
 import { DataView } from 'primereact/dataview';
-import Navbar from "../../../Components/Navbar";
 import * as S from "./styles";
+import { InputText } from "primereact/inputtext";
+import NavbarAdmin from '../../../Components/NavbarAdmin';
+import { Button } from 'primereact/button';
 
 function ListagemEstacao () {
 
@@ -15,12 +16,18 @@ function ListagemEstacao () {
             <S.ListagemEstacao>
                 <section>
                     <header>
-                        <Navbar/>
+                        <NavbarAdmin/>
                     </header>
                     <main>
                         <h1>Estações</h1>
                         <div className='pesquisa'>
-                            <AutoComplete placeholder='Pesquisar'/>
+                            <span className="p-input-icon-left">
+                                <i className="pi pi-search" />
+                                <InputText placeholder="Pesquisar" className='barra'/>
+                            </span>
+                            <span className="botao">
+                                <Button icon='pi pi-fw pi-filter' label='Filtrar'/>
+                            </span>
                         </div>
                         <div className='conteudo'>
                             <DataView paginator rows={10}/>

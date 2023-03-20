@@ -11,10 +11,15 @@ section{
             font-size: 50px;
         }
         .pesquisa{
-            padding: 20px;
-            border: 1px solid red;
-            p-autocomplete{
-                width: auto;
+            margin-left: 5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: row;
+            .barra{
+                width: 100rem;
+            }
+            .botao{
+                margin-left: 1rem;
             }
         }
     }
