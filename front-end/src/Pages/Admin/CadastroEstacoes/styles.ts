@@ -62,6 +62,7 @@ section{
                 .localizacao{
                     display: flex;
                     flex-direction: column;
+                    gap: 5px;
     
                     label{
                         align-items: left;
