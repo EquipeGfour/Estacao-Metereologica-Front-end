@@ -4,6 +4,8 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { MultiSelect, MultiSelectChangeEvent } from 'primereact/multiselect';
 import * as S from "./styles";
 import { Button } from 'primereact/button';
+import NavbarAdmin from '../../../Components/NavbarAdmin';
+
 
 interface Paramns {
     name: string;
@@ -37,7 +39,7 @@ function CadastroEstacao() {
         <S.Container>
             <section>
                 <header>
-                    {/* destinado ao cabeçalho */}
+                    <NavbarAdmin/>
                 </header>
                 <main>
                     <div className="card">
