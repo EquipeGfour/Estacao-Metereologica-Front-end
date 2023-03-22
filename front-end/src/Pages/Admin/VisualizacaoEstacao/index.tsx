@@ -6,6 +6,7 @@ import { Dialog } from 'primereact/dialog';
 import { Chart } from 'primereact/chart';
 import { InputText } from 'primereact/inputtext';
 import { InputNumber } from 'primereact/inputnumber'
+import Navbar from "../../../Components/Navbar";
 
 function VizualizacaoEstacao() {
     const [visible, setVisible] = useState<boolean>(false);
@@ -81,6 +82,7 @@ function VizualizacaoEstacao() {
 
     return (
         <>
+            <Navbar/>
             <S.View >
                 <div className="formato">
                     <div className='view'>
@@ -119,10 +121,6 @@ function VizualizacaoEstacao() {
                                     <div className="flex flex-column gap-2">
                                         <label htmlFor="Longetude">Longetude</label>
                                         <InputText id="Longetude" aria-describedby="Longetude-help" />
-                                    </div>
-                                    <div className="flex flex-column gap-2">
-                                        <label htmlFor="Latitude">Latitude</label>
-                                        <InputText id="Latitude" aria-describedby="Latitude-help" />
                                     </div>
                                     <div className="flex flex-column gap-2">
                                         <label htmlFor="Latitude">Latitude</label>
