@@ -19,6 +19,7 @@ interface Alerts {
 function CadastroEstacao() {
     const [value, setValue] = useState<string>('');
     const [valuee, setValuee] = useState<string>('');
+    const [valuess, setValuess] = useState<string>('');
     const [values, setValues] = useState<string>('');
     const [selectedParameters, setSelectedParameters] = useState<Paramns | null>(null);
     const [selectedAlerts, setSelectedAlerts] = useState<Alerts | null>(null);
@@ -55,11 +56,12 @@ function CadastroEstacao() {
                             </div>
                             <div className="localizacao">
                                 <label htmlFor="localization">Localização</label>
-                                <InputText type="text" placeholder="Localização" value={values} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValues(e.target.value)} />
+                                <InputText type="text" placeholder="Latitude" value={values} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValues(e.target.value)} />
+                                <InputText type="text" placeholder="Longitude" value={valuess} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValuess(e.target.value)} />
                             </div>
                             <div className="parametros-e-alertas">
                                 <div className="parametros">
-                                    <label htmlFor="Parameters">Parametros</label>
+                                    <label htmlFor="Parameters">Parâmetros</label>
                                     <MultiSelect value={selectedParameters} onChange={(e: MultiSelectChangeEvent) => setSelectedParameters(e.value)} options={Parametros} optionLabel="name"
                                         maxSelectedLabels={3} />
                                 </div>
