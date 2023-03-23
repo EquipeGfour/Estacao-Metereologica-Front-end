@@ -6,7 +6,7 @@ import { Dialog } from 'primereact/dialog';
 import { Chart } from 'primereact/chart';
 import { InputText } from 'primereact/inputtext';
 import { InputNumber } from 'primereact/inputnumber'
-import Navbar from "../../../Components/Navbar";
+import NavbarAdmin from "../../../Components/NavbarAdmin";
 
 function VizualizacaoEstacao() {
     const [visible, setVisible] = useState<boolean>(false);
@@ -82,8 +82,11 @@ function VizualizacaoEstacao() {
 
     return (
         <>
-            <Navbar/>
+            
             <S.View >
+                <header>
+                    <NavbarAdmin/>
+                </header>
                 <div className="formato">
                     <div className='view'>
                         <div className='h2'>

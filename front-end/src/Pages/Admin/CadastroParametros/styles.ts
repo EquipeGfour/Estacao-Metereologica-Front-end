@@ -38,7 +38,7 @@ section{
                 width: 25vw;
                 padding: 5%;
     
-                .estacaoNome{
+                .parametroNome{
                     display: flex;
                     flex-direction: column;
     
@@ -74,7 +74,6 @@ section{
                 .parametros-e-alertas{
                     display: flex;
                     flex-direction: row;
-                    justify-content: space-between;
     
                     label{
                         align-items: left;
@@ -84,13 +83,7 @@ section{
                     .parametros{
                         display: flex;
                         flex-direction: column;
-                        width: 48%;
-                    }
-                    .alertas{
-                        display: flex;
-                        flex-direction: column;
-                        width: 48%;
-                        
+                        width: 100%;
                     }
                 }
                 .botao{
