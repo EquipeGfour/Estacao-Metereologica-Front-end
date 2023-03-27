@@ -1,65 +1,125 @@
-import React, { useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { MultiSelect, MultiSelectChangeEvent } from 'primereact/multiselect';
 import * as S from "./styles";
 import { Button } from 'primereact/button';
 import NavbarAdmin from '../../../Components/NavbarAdmin';
+import { api } from "../../../service/api";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+// import { useFormik } from 'formik';
 
 
-/* interface Paramns {
-    name: string;
-    unidade: string;
-} */
+
+interface CadastroParametros {
+    tipo: string;
+    unidade_medida: string;
+    fator_conversao: string;
+    offset: string;
+}
+
 
 function CadastroEstacao() {
-    const [value, setValue] = useState<string>('');
-    const [valuee, setValuee] = useState<string>('');
-    const [valuess, setValuess] = useState<string>('');
-    const [values, setValues] = useState<string>('');
-/*     const [selectedParameters, setSelectedParameters] = useState<Paramns | null>(null);
+    const navigate = useNavigate();
 
-    const Parametros: Paramns[] = [
-        { name: 'Mililitro', unidade: 'ml' },
-        { name: 'Velocidade', unidade: 'Km/h' },
-        { name: 'Porcentagem', unidade: '%' },
-    ]; */
+
+    // const formik = useFormik({
+    //     initialValues: {
+    //         value: ''
+    //     },
+    //     validate: (data) => {
+    //         let errors = {};
+
+    //         if (!data.value) {
+    //             errors.value = 'Password is required.';
+    //         }
+
+    //         return errors;
+    //     },
+    //     onSubmit: (data) => {
+    //         data && show();
+    //         formik.resetForm();
+    //     }
+    // });
+
+    // const isFormFieldInvalid = (name) => !!(formik.touched[name] && formik.errors[name]);
+
+    // const getFormErrorMessage = (name) => {
+    //     return isFormFieldInvalid(name) ? <small className="p-error">{formik.errors[name]}</small> : <small className="p-error">&nbsp;</small>;
+    // };
+
+
+
+    const cadastroParametros = useCallback(async (data: CadastroParametros) => {
+        await api
+            .post<CadastroParametros>(`/parametro/cadastrar-parametro`, {
+                tipo: data.tipo,
+                unidade_medida: data.unidade_medida,
+                fator_conversao: data.fator_conversao,
+                offset: data.offset,
+
+            })
+            .then((response) => {
+                console.log(response);
+
+            })
+            .catch(function (error) {
+                console.log(error)
+            });
+    }, []);
+
+    const onSubmit = useCallback(async (data: CadastroParametros) => {
+        cadastroParametros(data);
+        navigate(-1)
+    }, []);
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<CadastroParametros>({
+        mode: "onBlur",
+    });
 
     return (
-        <S.Container>
-            <section>
-                <header>
-                    <NavbarAdmin/>
-                </header>
-                <main>
-                    <div className="card">
-                        <div className="campos">
-                            <p>Cadastrar Parâmetros</p>
-                            <div className="parametroNome">
-                                <label htmlFor="username">Nome</label>
-                                <InputText className="inputNome" type="text" placeholder="Ex.: Temperatura" value={value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)} />
-                            </div>
-                            <div className="localizacao">
-                                <label htmlFor="localization">Medida</label>
-                                <InputText type="text" placeholder="" value={valuee} onChange=
-                                {(e: React.ChangeEvent<HTMLInputElement>) => setValuee(e.target.value)} />
-                            </div>
-                            <div className="localizacao">
-                                <label htmlFor="localization">Fator de conversão</label>
-                                <InputText type="text" placeholder="" value={values} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValues(e.target.value)} />
-                            </div>
-                            <div className="localizacao">
-                                <label htmlFor="localization">Offset</label>
-                                <InputText type="text" placeholder="" value={valuess} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValuess(e.target.value)} />
-                            </div>                            
-                            <div className="botao">
-                                <Button label="Cadastrar" type="submit" className="p-button-outlined" />
+        <>
+            <S.Container>
+                <section>
+                    <header>
+                        <NavbarAdmin />
+                    </header>
+                    <main>
+                        <div className="card">
+                            <div className="campos">
+                                <p>Cadastrar Parâmetros</p>
+                                <form onSubmit={handleSubmit(onSubmit)}>
+                                    <div className="parametroNome">
+                                        <label htmlFor="username">Nome</label>
+                                        <InputText className="inputNome" type="text" placeholder="Ex.: Temperatura" {...register("tipo")} required />
+                                    </div>
+                                    <div className="localizacao">
+                                        <label htmlFor="localization">Medida</label>
+                                        <InputText type="text" placeholder="Sigla da unidade ex.: mm"{...register("unidade_medida")} required />
+                                    </div>
+                                    <div className="localizacao">
+                                        <label htmlFor="localization">Fator de conversão</label>
+                                        <InputText type="text" placeholder="" {...register("fator_conversao")} required />
+                                    </div>
+                                    <div className="localizacao">
+                                        <label htmlFor="localization">Offset</label>
+                                        <InputText type="text" placeholder="" {...register("offset")} required />
+                                    </div>
+                                    <div className="botao">
+                                        <Button label="Cadastrar" type="submit" onSubmit={() => navigate(-1)} className="p-button-outlined" />
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                    </div>
-                </main>
-            </section>
-        </S.Container>
+                    </main>
+                </section>
+            </S.Container>
+        </>
     )
 }
 export default CadastroEstacao;
