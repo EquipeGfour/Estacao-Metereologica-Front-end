@@ -110,7 +110,11 @@ function VizualizacaoEstacao() {
                             </div>
 
                             <div className="card flex justify-content-center">
-                                <div className='botaoEditar'><Button icon="pi pi-pencil" onClick={() => setVisible(true)} /></div>
+                                <div className='botaoEditar'>
+                                    <Button icon="pi pi-pencil" onClick={() => setVisible(true)} />
+                                    <Button icon="pi pi-plus" onClick={() => setVisible(true)} />
+                                    <Button icon="pi pi-trash" />
+                                </div>
                                 <Dialog header="Editar Estação" visible={visible} style={{ width: '50vw' }} onHide={() => setVisible(false)} footer={footerContent}>
 
                                     <div className="flex flex-column gap-2">
@@ -141,8 +145,6 @@ function VizualizacaoEstacao() {
                                         <label htmlFor="V.Vento">Veloc.Vento</label>
                                         <InputNumber id="V.Vento" aria-describedby="V.Vento-help" />
                                     </div>
-
-
                                 </Dialog>
                             </div>
 
