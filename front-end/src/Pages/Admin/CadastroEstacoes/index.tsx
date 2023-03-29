@@ -1,41 +1,63 @@
-import React, { useState } from "react";
+import React, { useState,useEffect,useCallback } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
-import { MultiSelect, MultiSelectChangeEvent } from 'primereact/multiselect';
 import * as S from "./styles";
 import { Button } from 'primereact/button';
 import NavbarAdmin from '../../../Components/NavbarAdmin';
+import axios from 'axios';
+import { api } from "../../../service/api";
+import { useNavigate } from "react-router";
+import { useForm } from "react-hook-form";
 
 
-interface Paramns {
-    name: string;
-    unidade: string;
+
+interface CadastroEstaçoes{
+    nome:String,
+    data_criacao:String,
+    latitude:String,
+    longitude:String,
+    utc:String
 }
-interface Alerts {
-    name: string;
-    unidade: string;
-}
+
 
 function CadastroEstacao() {
-    const [value, setValue] = useState<string>('');
-    const [valuee, setValuee] = useState<string>('');
-    const [valuess, setValuess] = useState<string>('');
-    const [values, setValues] = useState<string>('');
-    const [selectedParameters, setSelectedParameters] = useState<Paramns | null>(null);
-    const [selectedAlerts, setSelectedAlerts] = useState<Alerts | null>(null);
+    const cadastrarEstacao = useCallback(async (data: CadastroEstaçoes) => {
+        await api
+            .post<CadastroEstaçoes>(`/estacao/cadastrar`, {
+                nome:data.nome,
+                data_criacao:"2023-03-16T17:30:00.000Z",
+                latitude:data.latitude,
+                longitude:data.longitude,
+                utc:'2023-03-16T17:30:00.000Z'
 
-    const Parametros: Paramns[] = [
-        { name: 'Temperatura', unidade: '°C' },
-        { name: 'Umidade', unidade: '%' },
-        { name: 'Vento', unidade: 'Km/h' },
-    ];
-    const Alertas: Alerts[] = [
-        { name: 'Calor', unidade: '°C' },
-        { name: 'Chuva', unidade: 'mm' },
-        { name: 'Vento', unidade: 'Km/h' },
+            })
+            .then((response) => {
+                console.log(response);
 
-    ];
+            })
+            .catch(function (error) {
+                console.log(error)
+            });
+    }, []);
+    
+    const onSubmit = useCallback(async (data: CadastroEstaçoes) => {
+        cadastrarEstacao(data);
+        navigate(-1)
+    }, []);
 
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<CadastroEstaçoes>({
+        mode: "onBlur",
+    });
+
+    const navigate = useNavigate();
+    const [value, setValue] = useState<string>();
+    const [valuess, setValuess] = useState<string>();
+    const [values, setValues] = useState<string>();
+    
     return (
         <S.Container>
             <section>
@@ -43,39 +65,26 @@ function CadastroEstacao() {
                     <NavbarAdmin/>
                 </header>
                 <main>
+                    <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="card">
                         <div className="campos">
                             <p>Cadastrar Estação</p>
                             <div className="estacaoNome">
                                 <label htmlFor="username">Nome da estação</label>
-                                <InputText className="inputNome" type="text" placeholder="Estação X" value={value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)} />
+                                <InputText className="inputNome" type="text" placeholder="Estação X"  value={value} {...register("nome")}  required/>
                             </div>
-                            <div className="descricao">
-                                <label htmlFor="description">Descrição</label>
-                                <InputTextarea value={valuee} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setValuee(e.target.value)} rows={8} />
-                            </div>
+                            <br />
                             <div className="localizacao">
                                 <label htmlFor="localization">Localização</label>
-                                <InputText type="text" placeholder="Latitude" value={values} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValues(e.target.value)} />
-                                <InputText type="text" placeholder="Longitude" value={valuess} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValuess(e.target.value)} />
-                            </div>
-                            <div className="parametros-e-alertas">
-                                <div className="parametros">
-                                    <label htmlFor="Parameters">Parâmetros</label>
-                                    <MultiSelect value={selectedParameters} onChange={(e: MultiSelectChangeEvent) => setSelectedParameters(e.value)} options={Parametros} optionLabel="name"
-                                        maxSelectedLabels={3} />
-                                </div>
-                                <div className="alertas">
-                                    <label htmlFor="Alerts">Alertas</label>
-                                    <MultiSelect value={selectedAlerts} onChange={(e: MultiSelectChangeEvent) => setSelectedAlerts(e.value)} options={Alertas} optionLabel="name"
-                                        maxSelectedLabels={3} />
-                                </div>
+                                <InputText type="text" placeholder="Latitude" value={values} {...register("latitude")}   required/>
+                                <InputText type="text" placeholder="Longitude" value={valuess}  {...register("longitude")} required/>
                             </div>
                             <div className="botao">
-                                <Button label="Cadastrar" type="submit" className="p-button-outlined" />
+                                <Button label="Cadastrar" type="submit" className="p-button-outlined" onSubmit={() => navigate(-1)} />
                             </div>
                         </div>
                     </div>
+                    </form>
                 </main>
             </section>
         </S.Container>
