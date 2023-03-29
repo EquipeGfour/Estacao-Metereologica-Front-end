@@ -113,6 +113,7 @@ function VizualizacaoEstacao() {
                                 <div className='botaoEditar'>
                                     <Button icon="pi pi-pencil" onClick={() => setVisible(true)} />
                                     <Button icon="pi pi-plus" onClick={() => setVisible(true)} />
+                                    <Button icon="pi pi-trash" />
                                 </div>
                                 <Dialog header="Editar Estação" visible={visible} style={{ width: '50vw' }} onHide={() => setVisible(false)} footer={footerContent}>
 

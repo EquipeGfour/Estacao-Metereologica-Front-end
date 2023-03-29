@@ -84,7 +84,7 @@ font-size: 35px;
 }
 .botaoEditar{
     display: flex;
-    height: 50px;
+    flex-direction: column;
     gap: 5px;
 }
 
