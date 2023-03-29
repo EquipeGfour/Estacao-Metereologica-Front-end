@@ -8,9 +8,6 @@ import NavbarAdmin from '../../../Components/NavbarAdmin';
 import { api } from "../../../service/api";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-// import { useFormik } from 'formik';
-
-
 
 interface CadastroParametros {
     tipo: string;
@@ -22,34 +19,6 @@ interface CadastroParametros {
 
 function CadastroEstacao() {
     const navigate = useNavigate();
-
-
-    // const formik = useFormik({
-    //     initialValues: {
-    //         value: ''
-    //     },
-    //     validate: (data) => {
-    //         let errors = {};
-
-    //         if (!data.value) {
-    //             errors.value = 'Password is required.';
-    //         }
-
-    //         return errors;
-    //     },
-    //     onSubmit: (data) => {
-    //         data && show();
-    //         formik.resetForm();
-    //     }
-    // });
-
-    // const isFormFieldInvalid = (name) => !!(formik.touched[name] && formik.errors[name]);
-
-    // const getFormErrorMessage = (name) => {
-    //     return isFormFieldInvalid(name) ? <small className="p-error">{formik.errors[name]}</small> : <small className="p-error">&nbsp;</small>;
-    // };
-
-
 
     const cadastroParametros = useCallback(async (data: CadastroParametros) => {
         await api
