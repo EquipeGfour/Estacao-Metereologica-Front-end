@@ -23,6 +23,7 @@ export const View = styled.div`
 
     text-align: start;
     margin-top: 0;
+    margin-right: 3vw ;
     
 }
 .parametrosDivs{
@@ -81,6 +82,10 @@ font-size: 35px;
     padding: 45px;
     background-color: #ffffff;
 }
-
+.botaoEditar{
+    display: flex;
+    height: 50px;
+    gap: 5px;
+}
 
 `
