@@ -6,6 +6,8 @@ import { InputText } from "primereact/inputtext";
 import NavbarAdmin from '../../../Components/NavbarAdmin';
 import { Button } from 'primereact/button';
 import { api } from '../../../service/api';
+import 'primeflex/primeflex.css';
+import { useNavigate } from "react-router-dom";
 
 interface Estacao {
     id: number;
@@ -21,6 +23,7 @@ function ListagemEstacao () {
     const [estacoes, setEstacao] = useState<Estacao[]>([]);
     const [selectedEstacoes, setSelectedEstacoes] = useState(null);
     const [filteredEstacoes, setFilteredEstacoes] = useState(null);
+    const navigate = useNavigate();
 
     async function getAllEstacoes() {
         const response = await api.get<Estacao[]>("/estacao/buscar");
@@ -31,20 +34,20 @@ function ListagemEstacao () {
         getAllEstacoes();
     });
     
-    const itemTemplate = (estacao: Estacao) => {
+    const gridItem = (estacao: Estacao) => {
         return (
-            <div className="col-12">
-            <div className="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
-                <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={`https://www.agsolve.com.br/imgprodutos/imagens/1006_2.jpg`} alt={estacao.nome} />
-                <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-                    <div className="flex flex-column align-items-center sm:align-items-start gap-3">
-                        <div className="text-2xl font-bold text-900">{estacao.nome}</div>
+            <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2">
+                <div className="p-4 border-1 surface-border surface-card border-round">
+                    <div className="flex flex-column align-items-center gap-3 py-5">
+                        <img className="w-9 shadow-2 border-round" src={`https://www.agsolve.com.br/imgprodutos/imagens/1006_2.jpg`} alt={estacao.nome} />
+                        <div className="text-2xl font-bold">{estacao.nome}</div>
+                        <Button className="font-bold h-3rem w-10rem justify-content-center" onClick={e=>navigate(`/visualizacao-estacao/${estacao.id}`)}>Ver mais</Button>
                     </div>
                 </div>
             </div>
-        </div>
-    );
-};
+        );
+    };
+
     return(
         <>
             <S.ListagemEstacao>
@@ -64,7 +67,7 @@ function ListagemEstacao () {
                             </span>
                         </div>
                         <div className='conteudo'>
-                            <DataView  value={estacoes} itemTemplate={itemTemplate} paginator rows={10}/>
+                            <DataView  value={estacoes} itemTemplate={gridItem} paginator rows={9}/>
                         </div>
                     </main>
                 </section>
