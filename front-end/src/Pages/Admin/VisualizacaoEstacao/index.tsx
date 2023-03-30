@@ -1,23 +1,59 @@
 
 import * as S from "./visualizacao";
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { Chart } from 'primereact/chart';
 import { InputText } from 'primereact/inputtext';
 import { InputNumber } from 'primereact/inputnumber'
 import NavbarAdmin from "../../../Components/NavbarAdmin";
+import { api } from "../../../service/api";
+import { useNavigate, useParams } from "react-router-dom";
+import { registerables } from "chart.js";
+import { useForm } from "react-hook-form";
+
+interface Estacao {
+    id: number;
+    nome: string;
+    data_criacao: Date;
+    latitude: string;
+    longitude: string;
+    utc: Date;
+}
 
 function VizualizacaoEstacao() {
     const [visible, setVisible] = useState<boolean>(false);
+    const [estacoes, setEstacao] = useState<Estacao>();
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const onSubmit = useCallback(async (data: Estacao) => {
+        editarEstacao(data);
+    }, []);
+    const {
+      register,
+      handleSubmit,
+      formState: { errors },
+    } = useForm<Estacao>({
+      mode: "onBlur",
+    });
     const footerContent = (
-
+        
         <div>
-            <Button label="Editar" icon="pi pi-check" onClick={() => setVisible(false)} autoFocus />
+            <Button label="Editar" icon="pi pi-check" onClick={() => setVisible(false)} autoFocus onSubmit={handleSubmit(onSubmit)}/>
         </div>
     );
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
+    
+    
+    
+    useEffect(() => { 
+        async function getAllEstacoes() {
+        const response = await api.get<Estacao>(`/estacao/buscar/${id}`);
+        setEstacao(response.data);
+      }
+        getAllEstacoes();
+    }, [id]);
 
     useEffect(() => {
         const documentStyle = getComputedStyle(document.documentElement);
@@ -80,6 +116,38 @@ function VizualizacaoEstacao() {
         setChartOptions(options);
     }, []);
 
+    const deleteEstacao = useCallback(async (id: string) => {
+        await api
+          .delete(`/estacao/excluir/${id}`)
+          .then(function (response) {
+            if (response) {
+              navigate(`/`);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }, []);
+
+
+
+      const editarEstacao = useCallback(async (data: Estacao) => {
+        await api
+          .put<Estacao>(`/estacao/editar/${id}`, {
+            nome: data.nome,
+            longitude: data.longitude,
+            latitude: data.latitude,
+          })
+          .then(function (response) {
+            if (response) {
+                navigate(`/visualizacao-estacao/${id}`);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }, []);
+ 
     return (
         <>
             
@@ -90,8 +158,7 @@ function VizualizacaoEstacao() {
                 <div className="formato">
                     <div className='view'>
                         <div className='h2'>
-                            <h1>Nome Estação</h1>
-
+                            <h1>{estacoes?.nome}</h1>
                         </div>
                         <div className='container'>
                             <div className="descricao">
@@ -104,36 +171,36 @@ function VizualizacaoEstacao() {
                             <div className='h2'>
                                 <div className='texto'>
                                     <h2>Localização:</h2>
-                                    <h3>Longetude:213123123</h3>
-                                    <h3>Latitude:123123123</h3>
+                                    <h3>{estacoes?.longitude}</h3>
+                                    <h3>{estacoes?.latitude}</h3>
                                 </div>
                             </div>
 
                             <div className="card flex justify-content-center">
                                 <div className='botaoEditar'>
                                     <Button icon="pi pi-pencil" onClick={() => setVisible(true)} />
-                                    <Button icon="pi pi-plus" onClick={() => setVisible(true)} />
-                                    <Button icon="pi pi-trash" />
+                                    {/* <Button icon="pi pi-plus" onClick={() => setVisible(true)} /> */}
+                                    <Button icon="pi pi-trash" onClick={() => deleteEstacao(String(estacoes?.id))} />
                                 </div>
                                 <Dialog header="Editar Estação" visible={visible} style={{ width: '50vw' }} onHide={() => setVisible(false)} footer={footerContent}>
 
                                     <div className="flex flex-column gap-2">
                                         <label htmlFor="Nome Estação">Nome Estação</label>
-                                        <InputText id="Nome Estação" aria-describedby="Nome Estação-help" />
+                                        <InputText id="Nome Estação" aria-describedby="Nome Estação-help" defaultValue={estacoes?.nome} required {...register("nome")}/>
                                     </div>
-                                    <div className="flex flex-column gap-2">
+                                    {/* <div className="flex flex-column gap-2">
                                         <label htmlFor="Descrição">Descrição:</label>
                                         <InputText id="Descrição" aria-describedby="Descrição-help" />
-                                    </div>
+                                    </div> */}
                                     <div className="flex flex-column gap-2">
-                                        <label htmlFor="Longetude">Longetude</label>
-                                        <InputText id="Longetude" aria-describedby="Longetude-help" />
+                                        <label htmlFor="Longetude">Longitude</label>
+                                        <InputText id="Longetude" aria-describedby="Longetude-help" defaultValue={estacoes?.longitude} required {...register("longitude")}/>
                                     </div>
                                     <div className="flex flex-column gap-2">
                                         <label htmlFor="Latitude">Latitude</label>
-                                        <InputText id="Latitude" aria-describedby="Latitude-help" />
+                                        <InputText id="Latitude" aria-describedby="Latitude-help" defaultValue={estacoes?.latitude} required {...register("latitude")}/>
                                     </div>
-                                    <div className="flex flex-column gap-2">
+                                    {/* <div className="flex flex-column gap-2">
                                         <label htmlFor="Temperatura">Temperatura</label>
                                         <InputNumber id="Temperatura" aria-describedby="Temperatura-help" />
                                     </div>
@@ -144,7 +211,7 @@ function VizualizacaoEstacao() {
                                     <div className="flex flex-column gap-2">
                                         <label htmlFor="V.Vento">Veloc.Vento</label>
                                         <InputNumber id="V.Vento" aria-describedby="V.Vento-help" />
-                                    </div>
+                                    </div> */}
                                 </Dialog>
                             </div>
 
