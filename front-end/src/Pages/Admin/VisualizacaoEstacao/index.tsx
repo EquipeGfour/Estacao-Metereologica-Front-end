@@ -1,4 +1,3 @@
-
 import * as S from "./visualizacao";
 import React, { useCallback, useEffect, useState } from 'react';
 import { Button } from 'primereact/button';
@@ -11,6 +10,7 @@ import { api } from "../../../service/api";
 import { useNavigate, useParams } from "react-router-dom";
 import { registerables } from "chart.js";
 import { useForm } from "react-hook-form";
+import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect";
 
 interface Estacao {
     id: number;
@@ -21,9 +21,20 @@ interface Estacao {
     utc: Date;
 }
 
+interface Parametros {
+    id: number;
+    tipo: string;
+    unidade_medida: string;
+    fator_conversao: string;
+    offset: string;
+}
+
 function VizualizacaoEstacao() {
     const [visible, setVisible] = useState<boolean>(false);
+    const [visible2, setVisible2] = useState<boolean>(false);
     const [estacoes, setEstacao] = useState<Estacao>();
+    const [parametro, setParametros] = useState<Parametros>()
+    const [selectedParametro, setSelectedParametro] = useState<Parametros | null>(null);
     const { id } = useParams();
     const navigate = useNavigate();
     const onSubmit = useCallback(async (data: Estacao) => {
@@ -36,24 +47,25 @@ function VizualizacaoEstacao() {
     } = useForm<Estacao>({
       mode: "onBlur",
     });
-    const footerContent = (
-        
-        <div>
-            <Button label="Editar" icon="pi pi-check" onClick={() => setVisible(false)} autoFocus onSubmit={handleSubmit(onSubmit)}/>
-        </div>
-    );
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
-    
-    
+    const parametros: Parametros[] = []
     
     useEffect(() => { 
         async function getAllEstacoes() {
-        const response = await api.get<Estacao>(`/estacao/buscar/${id}`);
-        setEstacao(response.data);
-      }
+            const response = await api.get<Estacao>(`/estacao/buscar/${id}`);
+            setEstacao(response.data);
+        }
         getAllEstacoes();
     }, [id]);
+
+    useEffect(( ) => {
+        async function getAllParametros() {
+            const response = await api.get<Parametros>(`/parametro/buscar-parametro`);
+            setParametros(response.data);
+        }
+        getAllParametros();
+    }, [])
 
     useEffect(() => {
         const documentStyle = getComputedStyle(document.documentElement);
@@ -140,7 +152,7 @@ function VizualizacaoEstacao() {
           })
           .then(function (response) {
             if (response) {
-                navigate(`/visualizacao-estacao/${id}`);
+                navigate(0);
             }
           })
           .catch((err) => {
@@ -179,39 +191,47 @@ function VizualizacaoEstacao() {
                             <div className="card flex justify-content-center">
                                 <div className='botaoEditar'>
                                     <Button icon="pi pi-pencil" onClick={() => setVisible(true)} />
-                                    {/* <Button icon="pi pi-plus" onClick={() => setVisible(true)} /> */}
+                                    <Button icon="pi pi-plus" onClick={() => setVisible2(true)} /> 
                                     <Button icon="pi pi-trash" onClick={() => deleteEstacao(String(estacoes?.id))} />
                                 </div>
-                                <Dialog header="Editar Estação" visible={visible} style={{ width: '50vw' }} onHide={() => setVisible(false)} footer={footerContent}>
-
-                                    <div className="flex flex-column gap-2">
-                                        <label htmlFor="Nome Estação">Nome Estação</label>
-                                        <InputText id="Nome Estação" aria-describedby="Nome Estação-help" defaultValue={estacoes?.nome} required {...register("nome")}/>
+                                <Dialog header="Editar Estação" visible={visible} style={{ width: '50vw' }} onHide={() => setVisible(false)} >
+                                    <form onSubmit={handleSubmit(onSubmit)}>
+                                        <div className="flex flex-column gap-2">
+                                            <label htmlFor="Nome Estação">Nome Estação</label>
+                                            <InputText id="Nome Estação" aria-describedby="Nome Estação-help" defaultValue={estacoes?.nome} required {...register("nome")}/>
+                                        </div>
+                                        {/* <div className="flex flex-column gap-2">
+                                            <label htmlFor="Descrição">Descrição:</label>
+                                            <InputText id="Descrição" aria-describedby="Descrição-help" />
+                                        </div> */}
+                                        <div className="flex flex-column gap-2">
+                                            <label htmlFor="Longetude">Longitude</label>
+                                            <InputText id="Longetude" aria-describedby="Longetude-help" defaultValue={estacoes?.longitude} required {...register("longitude")}/>
+                                        </div>
+                                        <div className="flex flex-column gap-2">
+                                            <label htmlFor="Latitude">Latitude</label>
+                                            <InputText id="Latitude" aria-describedby="Latitude-help" defaultValue={estacoes?.latitude} required {...register("latitude")}/>
+                                        </div>
+                                        {/* <div className="flex flex-column gap-2">
+                                            <label htmlFor="Temperatura">Temperatura</label>
+                                            <InputNumber id="Temperatura" aria-describedby="Temperatura-help" />
+                                        </div>
+                                        <div className="flex flex-column gap-2">
+                                            <label htmlFor="Umidade">Umidade</label>
+                                            <InputNumber id="Umidade" aria-describedby="Umidade-help" />
+                                        </div>
+                                        <div className="flex flex-column gap-2">
+                                            <label htmlFor="V.Vento">Veloc.Vento</label>
+                                            <InputNumber id="V.Vento" aria-describedby="V.Vento-help" />
+                                        </div> */}
+                                        <Button label="Editar" icon="pi pi-check" onClick={() => setVisible(false)} autoFocus type="submit"/>
+                                    </form>
+                                </Dialog>
+                                <Dialog header="Associar Parâmetros" visible={visible2} style={{ width: '50vw' }} onHide={() => setVisible2(false)}> 
+                                    <div className="card flex justify-content-center">
+                                        <MultiSelect value={selectedParametro} onChange={(e: MultiSelectChangeEvent) => setSelectedParametro(e.value)} options={parametros} optionLabel="nome" 
+                                        filter placeholder="Pârametros Selecionados" maxSelectedLabels={3} className="w-full md:w-20rem" />
                                     </div>
-                                    {/* <div className="flex flex-column gap-2">
-                                        <label htmlFor="Descrição">Descrição:</label>
-                                        <InputText id="Descrição" aria-describedby="Descrição-help" />
-                                    </div> */}
-                                    <div className="flex flex-column gap-2">
-                                        <label htmlFor="Longetude">Longitude</label>
-                                        <InputText id="Longetude" aria-describedby="Longetude-help" defaultValue={estacoes?.longitude} required {...register("longitude")}/>
-                                    </div>
-                                    <div className="flex flex-column gap-2">
-                                        <label htmlFor="Latitude">Latitude</label>
-                                        <InputText id="Latitude" aria-describedby="Latitude-help" defaultValue={estacoes?.latitude} required {...register("latitude")}/>
-                                    </div>
-                                    {/* <div className="flex flex-column gap-2">
-                                        <label htmlFor="Temperatura">Temperatura</label>
-                                        <InputNumber id="Temperatura" aria-describedby="Temperatura-help" />
-                                    </div>
-                                    <div className="flex flex-column gap-2">
-                                        <label htmlFor="Umidade">Umidade</label>
-                                        <InputNumber id="Umidade" aria-describedby="Umidade-help" />
-                                    </div>
-                                    <div className="flex flex-column gap-2">
-                                        <label htmlFor="V.Vento">Veloc.Vento</label>
-                                        <InputNumber id="V.Vento" aria-describedby="V.Vento-help" />
-                                    </div> */}
                                 </Dialog>
                             </div>
 
