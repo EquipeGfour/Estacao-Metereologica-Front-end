@@ -1,5 +1,5 @@
 import * as S from "./visualizacao";
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { Chart } from 'primereact/chart';
@@ -13,6 +13,7 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect";
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { Toast } from 'primereact/toast';
 
 interface EstacaoDados {
     estacao: {
@@ -46,6 +47,7 @@ function VizualizacaoEstacao() {
     const [selectedParametro, setSelectedParametro] = useState<EstacaoDados | null>(null);
     const { id } = useParams();
     const navigate = useNavigate();
+    const toast = useRef<Toast>(null);
 
 
     const onSubmit: SubmitHandler<FieldValues> = useCallback(async (data) => {
@@ -153,9 +155,11 @@ function VizualizacaoEstacao() {
                 if (response) {
                     navigate(`/`);
                 }
+                toast.current?.show({ severity: 'success', summary: 'Sucesso', detail: 'Estação Deletada.', life: 3000 });
             })
             .catch((err) => {
                 console.log(err);
+                toast.current?.show({ severity: 'error', summary: 'error', detail: 'Algo deu errado...', life: 3000 });
             });
     }, []);
 
@@ -167,9 +171,11 @@ function VizualizacaoEstacao() {
         await api.post(`/ehp/cadastrar`, data)
             .then((res) => {
                 console.log(res)
+                toast.current?.show({ severity: 'success', summary: 'Sucesso', detail: 'Parametros Registrados', life: 3000 });
                 setVisible2(false)
             })
             .catch(error => {
+                toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Algo deu errado...', life: 3000 });
                 console.log(error);
             })
     };
@@ -194,11 +200,12 @@ function VizualizacaoEstacao() {
 
     return (
         <>
-
+            <Toast ref={toast} />
             <S.View >
                 <header>
                     <NavbarAdmin />
                 </header>
+
                 <div className="formato">
                     <div className='view'>
                         <div className='h2'>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, SetStateAction } from "react";
+import React, { useState, useEffect, useCallback, SetStateAction, useRef } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import * as S from "./styles";
@@ -8,6 +8,7 @@ import axios from 'axios';
 import { api } from "../../../service/api";
 import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
+import { Toast } from "primereact/toast";
 
 
 
@@ -27,6 +28,7 @@ function CadastroEstacao() {
     const [value, setValue] = useState<string>();
     const [valuess, setValuess] = useState<string>();
     const [values, setValues] = useState<string>();
+    const toast = useRef<Toast>(null);
     const navigate = useNavigate();
 
 
@@ -39,6 +41,11 @@ function CadastroEstacao() {
             utc: "2023-03-16T17:30:00.000Z",
         }).then(res => {
             setId(res.data.id);
+            toast.current?.show({ severity: 'success', summary: 'Successo', detail: 'Algo deu errado...', life: 3000 });
+
+        }).catch((err) => {
+            console.error(err);
+            toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Algo deu errado...', life: 3000 });
         });
     }, []);
 
@@ -68,7 +75,9 @@ function CadastroEstacao() {
 
 
     return (
+
         <S.Container>
+            <Toast ref={toast} />
             <section>
                 <header>
                     <NavbarAdmin />
