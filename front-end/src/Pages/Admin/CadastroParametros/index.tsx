@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useRef } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { MultiSelect, MultiSelectChangeEvent } from 'primereact/multiselect';
@@ -8,6 +8,7 @@ import NavbarAdmin from '../../../Components/NavbarAdmin';
 import { api } from "../../../service/api";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { Toast } from "primereact/toast";
 
 interface CadastroParametros {
     tipo: string;
@@ -19,6 +20,7 @@ interface CadastroParametros {
 
 function CadastroEstacao() {
     const navigate = useNavigate();
+    const toast = useRef<Toast>(null);
 
     const cadastroParametros = useCallback(async (data: CadastroParametros) => {
         await api
@@ -54,6 +56,7 @@ function CadastroEstacao() {
     return (
         <>
             <S.Container>
+            <Toast ref={toast} />
                 <section>
                     <header>
                         <NavbarAdmin />

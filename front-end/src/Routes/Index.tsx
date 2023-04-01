@@ -10,6 +10,7 @@ function Routes() {
             <Route path="/cadastro-estacao" element={< CadastroEstacao />} />
             <Route path="/cadastro-parametro" element={< CadastroParametro />} />
             <Route path="/visualizacao-estacao" element={< VizualizacaoEstacao />} />
+            <Route path="/visualizacao-estacao/:id" element={< VizualizacaoEstacao />} />
             <Route path="/" element={< ListagemEstacao />} />
         </RoutesWrapper>
     );

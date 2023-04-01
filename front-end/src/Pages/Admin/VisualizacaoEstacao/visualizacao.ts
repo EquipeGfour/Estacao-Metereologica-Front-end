@@ -42,7 +42,6 @@ box-shadow:  20px 20px 60px #bebebe,
              -20px -20px 60px #ffffff;
              margin: 0 auto;
 }
-
 p{width:65%}
 
 .container {
