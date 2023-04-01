@@ -33,7 +33,7 @@ function VizualizacaoEstacao() {
     const [visible, setVisible] = useState<boolean>(false);
     const [visible2, setVisible2] = useState<boolean>(false);
     const [estacoes, setEstacao] = useState<Estacao>();
-    const [parametro, setParametros] = useState<Parametros>()
+    const [parametro, setParametros] = useState<Parametros[]>([])
     const [selectedParametro, setSelectedParametro] = useState<Parametros | null>(null);
     const { id } = useParams();
     const navigate = useNavigate();
@@ -49,7 +49,7 @@ function VizualizacaoEstacao() {
     });
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
-    const parametros: Parametros[] = []
+    const parametros: Parametros[] = parametro
     
     useEffect(() => { 
         async function getAllEstacoes() {
@@ -61,7 +61,7 @@ function VizualizacaoEstacao() {
 
     useEffect(( ) => {
         async function getAllParametros() {
-            const response = await api.get<Parametros>(`/parametro/buscar-parametro`);
+            const response = await api.get<Parametros[]>(`/parametro/buscar-parametro`);
             setParametros(response.data);
         }
         getAllParametros();
@@ -229,8 +229,8 @@ function VizualizacaoEstacao() {
                                 </Dialog>
                                 <Dialog header="Associar Parâmetros" visible={visible2} style={{ width: '50vw' }} onHide={() => setVisible2(false)}> 
                                     <div className="card flex justify-content-center">
-                                        <MultiSelect value={selectedParametro} onChange={(e: MultiSelectChangeEvent) => setSelectedParametro(e.value)} options={parametros} optionLabel="nome" 
-                                        filter placeholder="Pârametros Selecionados" maxSelectedLabels={3} className="w-full md:w-20rem" />
+                                        <MultiSelect value={selectedParametro} onChange={(e: MultiSelectChangeEvent) => setSelectedParametro(e.value)} options={parametros} optionLabel="tipo" 
+                                        filter placeholder="Pârametros Selecionados" maxSelectedLabels={3} className="w-full md:w-20rem" optionValue="id"/>
                                     </div>
                                 </Dialog>
                             </div>
