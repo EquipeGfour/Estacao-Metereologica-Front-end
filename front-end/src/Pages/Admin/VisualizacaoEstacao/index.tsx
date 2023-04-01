@@ -9,61 +9,79 @@ import NavbarAdmin from "../../../Components/NavbarAdmin";
 import { api } from "../../../service/api";
 import { useNavigate, useParams } from "react-router-dom";
 import { registerables } from "chart.js";
-import { useForm } from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect";
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 
-interface Estacao {
-    id: number;
-    nome: string;
-    data_criacao: Date;
-    latitude: string;
-    longitude: string;
-    utc: Date;
-}
-
-interface Parametros {
-    id: number;
-    tipo: string;
-    unidade_medida: string;
-    fator_conversao: string;
-    offset: string;
+interface EstacaoDados {
+    estacao: {
+        id: number;
+        nome: string;
+        data_criacao: string;
+        latitude: string;
+        longitude: string;
+        utc: string;
+    };
+    dados: {
+        id: number;
+        parametro: {
+            id: number;
+            tipo: string;
+            unidade_medida: string;
+            fator_conversao: string;
+            offset: string;
+        };
+    }[];
 }
 
 function VizualizacaoEstacao() {
+
     const [visible, setVisible] = useState<boolean>(false);
     const [visible2, setVisible2] = useState<boolean>(false);
-    const [estacoes, setEstacao] = useState<Estacao>();
-    const [parametro, setParametros] = useState<Parametros[]>([])
-    const [selectedParametro, setSelectedParametro] = useState<Parametros | null>(null);
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const onSubmit = useCallback(async (data: Estacao) => {
-        editarEstacao(data);
-    }, []);
-    const {
-      register,
-      handleSubmit,
-      formState: { errors },
-    } = useForm<Estacao>({
-      mode: "onBlur",
-    });
+    const [estacao, setEstacao] = useState<EstacaoDados>();
+    const [parametros, setParametros] = useState<EstacaoDados[]>([])
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
-    const parametros: Parametros[] = parametro
-    
-    useEffect(() => { 
-        async function getAllEstacoes() {
-            const response = await api.get<Estacao>(`/estacao/buscar/${id}`);
-            setEstacao(response.data);
-        }
-        getAllEstacoes();
-    }, [id]);
+    const [selectedParametro, setSelectedParametro] = useState<EstacaoDados | null>(null);
+    const { id } = useParams();
+    const navigate = useNavigate();
 
-    useEffect(( ) => {
-        async function getAllParametros() {
-            const response = await api.get<Parametros[]>(`/parametro/buscar-parametro`);
-            setParametros(response.data);
-        }
+
+    const onSubmit: SubmitHandler<FieldValues> = useCallback(async (data) => {
+        editarEstacao(data as EstacaoDados);
+    }, []);
+
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        mode: "onBlur",
+    });
+
+
+    const getEstacao = async () => {
+        await api.get(`/ehp/parametrosEstacao/${id}`).then((res) => {
+            console.log(res.data)
+            setEstacao(res.data);
+        }).catch((error) => {
+            console.log(error);
+        })
+
+    }
+    useEffect(() => {
+        getEstacao();
+    }, [id, estacao]);
+
+
+    const getAllParametros = async () => {
+        const response = await api.get<EstacaoDados[]>(`/parametro/buscar-parametro`);
+        setParametros(response.data);
+    }
+
+    useEffect(() => {
         getAllParametros();
     }, [])
 
@@ -130,51 +148,65 @@ function VizualizacaoEstacao() {
 
     const deleteEstacao = useCallback(async (id: string) => {
         await api
-          .delete(`/estacao/excluir/${id}`)
-          .then(function (response) {
-            if (response) {
-              navigate(`/`);
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }, []);
+            .delete(`/estacao/excluir/${id}`)
+            .then(function (response) {
+                if (response) {
+                    navigate(`/`);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, []);
+
+    const postParametros = async () => {
+        const data = {
+            id_estacao: String(id),
+            id_parametros: selectedParametro
+        }
+        await api.post(`/ehp/cadastrar`, data)
+            .then((res) => {
+                console.log(res)
+                setVisible2(false)
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    };
 
 
-
-      const editarEstacao = useCallback(async (data: Estacao) => {
+    const editarEstacao = useCallback(async (data: EstacaoDados) => {
         await api
-          .put<Estacao>(`/estacao/editar/${id}`, {
-            nome: data.nome,
-            longitude: data.longitude,
-            latitude: data.latitude,
-          })
-          .then(function (response) {
-            if (response) {
-                navigate(0);
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }, []);
- 
+            .put(`/estacao/editar/${id}`, {
+                nome: data.estacao.nome,
+                longitude: data.estacao.longitude,
+                latitude: data.estacao.latitude,
+            })
+            .then(function (response) {
+                if (response) {
+                    navigate(0);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, []);
+
     return (
         <>
-            
+
             <S.View >
                 <header>
-                    <NavbarAdmin/>
+                    <NavbarAdmin />
                 </header>
                 <div className="formato">
                     <div className='view'>
                         <div className='h2'>
-                            <h1>{estacoes?.nome}</h1>
+                            <h1>{estacao?.estacao.nome}</h1>
                         </div>
                         <div className='container'>
                             <div className="descricao">
-                                <p>Descrição:</p>
+                                <p><strong>Descrição:</strong></p>
                                 <p className="m-0">
                                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae
                                     numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque quas!
@@ -183,22 +215,22 @@ function VizualizacaoEstacao() {
                             <div className='h2'>
                                 <div className='texto'>
                                     <h2>Localização:</h2>
-                                    <h3>{estacoes?.longitude}</h3>
-                                    <h3>{estacoes?.latitude}</h3>
+                                    <h3>{estacao?.estacao.longitude}</h3>
+                                    <h3>{estacao?.estacao.latitude}</h3>
                                 </div>
                             </div>
 
                             <div className="card flex justify-content-center">
                                 <div className='botaoEditar'>
                                     <Button icon="pi pi-pencil" onClick={() => setVisible(true)} />
-                                    <Button icon="pi pi-plus" onClick={() => setVisible2(true)} /> 
-                                    <Button icon="pi pi-trash" onClick={() => deleteEstacao(String(estacoes?.id))} />
+                                    <Button icon="pi pi-plus" onClick={() => setVisible2(true)} />
+                                    <Button icon="pi pi-trash" onClick={() => deleteEstacao(String(estacao?.estacao.id))} />
                                 </div>
                                 <Dialog header="Editar Estação" visible={visible} style={{ width: '50vw' }} onHide={() => setVisible(false)} >
                                     <form onSubmit={handleSubmit(onSubmit)}>
                                         <div className="flex flex-column gap-2">
                                             <label htmlFor="Nome Estação">Nome Estação</label>
-                                            <InputText id="Nome Estação" aria-describedby="Nome Estação-help" defaultValue={estacoes?.nome} required {...register("nome")}/>
+                                            <InputText id="Nome Estação" aria-describedby="Nome Estação-help" defaultValue={estacao?.estacao.nome} required {...register("estacao.nome")} />
                                         </div>
                                         {/* <div className="flex flex-column gap-2">
                                             <label htmlFor="Descrição">Descrição:</label>
@@ -206,52 +238,39 @@ function VizualizacaoEstacao() {
                                         </div> */}
                                         <div className="flex flex-column gap-2">
                                             <label htmlFor="Longetude">Longitude</label>
-                                            <InputText id="Longetude" aria-describedby="Longetude-help" defaultValue={estacoes?.longitude} required {...register("longitude")}/>
+                                            <InputText id="Longetude" aria-describedby="Longetude-help" defaultValue={estacao?.estacao.longitude} required {...register("estacao.longitude")} />
                                         </div>
                                         <div className="flex flex-column gap-2">
                                             <label htmlFor="Latitude">Latitude</label>
-                                            <InputText id="Latitude" aria-describedby="Latitude-help" defaultValue={estacoes?.latitude} required {...register("latitude")}/>
+                                            <InputText id="Latitude" aria-describedby="Latitude-help" defaultValue={estacao?.estacao.latitude} required {...register("estacao.latitude")} />
                                         </div>
-                                        {/* <div className="flex flex-column gap-2">
-                                            <label htmlFor="Temperatura">Temperatura</label>
-                                            <InputNumber id="Temperatura" aria-describedby="Temperatura-help" />
-                                        </div>
-                                        <div className="flex flex-column gap-2">
-                                            <label htmlFor="Umidade">Umidade</label>
-                                            <InputNumber id="Umidade" aria-describedby="Umidade-help" />
-                                        </div>
-                                        <div className="flex flex-column gap-2">
-                                            <label htmlFor="V.Vento">Veloc.Vento</label>
-                                            <InputNumber id="V.Vento" aria-describedby="V.Vento-help" />
-                                        </div> */}
-                                        <Button label="Editar" icon="pi pi-check" onClick={() => setVisible(false)} autoFocus type="submit"/>
+                                        <Button label="Editar" icon="pi pi-check" onClick={() => setVisible(false)} autoFocus type="submit" />
                                     </form>
                                 </Dialog>
-                                <Dialog header="Associar Parâmetros" visible={visible2} style={{ width: '50vw' }} onHide={() => setVisible2(false)}> 
+                                <Dialog header="Associar Parâmetros" visible={visible2} style={{ width: '50vw' }} onHide={() => setVisible2(false)}>
                                     <div className="card flex justify-content-center">
-                                        <MultiSelect value={selectedParametro} onChange={(e: MultiSelectChangeEvent) => setSelectedParametro(e.value)} options={parametros} optionLabel="tipo" 
-                                        filter placeholder="Pârametros Selecionados" maxSelectedLabels={3} className="w-full md:w-20rem" optionValue="id"/>
+                                        <MultiSelect value={selectedParametro} onChange={(e) => setSelectedParametro(e.value)} options={parametros} optionLabel="tipo"
+                                            filter placeholder="Pârametros Selecionados" maxSelectedLabels={3} className="w-full md:w-20rem" optionValue="id" />
                                     </div>
+                                    <Button label="Adicionar Parametro" icon="pi pi-check" onClick={() => postParametros()} autoFocus type="submit" />
                                 </Dialog>
                             </div>
 
                         </div>
+                        <p><strong>Parâmetros:</strong></p>
+                        {estacao?.dados ? (
+                            <div>
+                                {estacao.dados.map((item) => (
+                                    <li style={{ listStyle: 'none' }} key={item.id}>
+                                        <p>- {item.parametro.tipo}</p>
+                                    </li>
+                                ))}
+                            </div>
+                        ) : (
+                            <p>Nenhum dado encontrado.</p>
+                        )}
                     </div>
 
-                    <div className="parametrosDivs">
-                        <div className="ParametrosEspecificos">
-                            <h3 className="nivel1">Temperatura</h3>
-                            <p className="Valores">18º</p>
-                        </div>
-                        <div className="ParametrosEspecificos">
-                            <h3 className="nivel2">Umidade</h3>
-                            <p className="Valores">18%</p>
-                        </div>
-                        <div className="ParametrosEspecificos">
-                            <h3 className="nivel3">Veloc.Vento</h3>
-                            <p className="Valores">18KM</p>
-                        </div>
-                    </div>
                     <div className="card grafico">
                         <Chart type="bar" data={chartData} options={chartOptions} />
                     </div>
@@ -263,8 +282,3 @@ function VizualizacaoEstacao() {
 }
 
 export default VizualizacaoEstacao;
-
-
-
-
-
