@@ -32,7 +32,7 @@ function ListagemEstacao () {
 
     useEffect(() => {
         getAllEstacoes();
-    });
+    },[]);
     
     const gridItem = (estacao: Estacao) => {
         return (
