@@ -66,16 +66,15 @@ function VizualizacaoEstacao() {
 
     const getEstacao = async () => {
         await api.get(`/ehp/parametrosEstacao/${id}`).then((res) => {
-            console.log(res.data)
             setEstacao(res.data);
         }).catch((error) => {
             console.log(error);
         })
-
     }
+
     useEffect(() => {
         getEstacao();
-    }, [id, estacao]);
+    }, [id]);
 
 
     const getAllParametros = async () => {
@@ -172,7 +171,8 @@ function VizualizacaoEstacao() {
             .then((res) => {
                 console.log(res)
                 toast.current?.show({ severity: 'success', summary: 'Sucesso', detail: 'Parametros Registrados', life: 3000 });
-                setVisible2(false)
+                getEstacao();
+                setVisible2(false);
             })
             .catch(error => {
                 toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Algo deu errado...', life: 3000 });
