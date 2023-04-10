@@ -17,19 +17,31 @@ function NavbarAdmin () {
                 navigate("/");
               },
         },
-        {
-            label: 'Adicionar Estação',
-            icon: 'pi pi-fw pi-plus',
-            command: (event) => {
-                navigate("/cadastro-estacao");
-              },
-        },
-        {
-            label: 'Adicionar Parâmetro',
-            icon: 'pi pi-fw pi-plus',
-            command: (event) => {
-                navigate("/cadastro-parametro");
-              },
+        {   label: 'Cadastrar',
+            icon: 'pi pi-fw pi-list',
+            items: [
+                {
+                    label: 'Estação',
+                    icon: 'pi pi-fw pi-plus',
+                    command: (event) => {
+                        navigate("/cadastro-estacao");
+                    },
+                },
+                {
+                    label: 'Parâmetro',
+                    icon: 'pi pi-fw pi-plus',
+                    command: (event) => {
+                        navigate("/cadastro-parametro");
+                    },
+                },
+                {
+                    label: 'Alerta',
+                    icon: 'pi pi-fw pi-plus',
+                    command: (event) => {
+                        navigate("/cadastro-alerta");
+                    },
+                },
+            ]
         }
     ]
     const end = <Button icon={'pi pi-fw pi-sign-out'}/>
