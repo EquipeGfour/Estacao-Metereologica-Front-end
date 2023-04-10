@@ -3,6 +3,7 @@ import CadastroEstacao from "../Pages/Admin/CadastroEstacoes";
 import CadastroParametro from "../Pages/Admin/CadastroParametros";
 import ListagemEstacao from "../Pages/Admin/ListagemEstacoes";
 import VizualizacaoEstacao from "../Pages/Admin/VisualizacaoEstacao";
+import Login from "../Pages/Admin/Login";
 
 function Routes() {
     return (
@@ -11,6 +12,7 @@ function Routes() {
             <Route path="/cadastro-parametro" element={< CadastroParametro />} />
             <Route path="/visualizacao-estacao" element={< VizualizacaoEstacao />} />
             <Route path="/visualizacao-estacao/:id" element={< VizualizacaoEstacao />} />
+            <Route path="/login" element={< Login />} />
             <Route path="/" element={< ListagemEstacao />} />
         </RoutesWrapper>
     );
