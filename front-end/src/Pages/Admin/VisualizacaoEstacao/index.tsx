@@ -2,7 +2,6 @@ import * as S from "./visualizacao";
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
-import { Chart } from 'primereact/chart';
 import { InputText } from 'primereact/inputtext';
 import { InputNumber } from 'primereact/inputnumber'
 import NavbarAdmin from "../../../Components/NavbarAdmin";
@@ -197,8 +196,7 @@ function VizualizacaoEstacao() {
                 console.log(err);
             });
     }, []);
-
-    return (
+        return (
         <>
             <Toast ref={toast} />
             <S.View >
@@ -212,7 +210,6 @@ function VizualizacaoEstacao() {
                             <h1>{estacao?.estacao.nome}</h1>
                         </div>
                         <div className='container'>
-                           
                             <div className='h2'>
                                 <div className='texto'>
                                     <h2>Localização:</h2>
@@ -268,9 +265,6 @@ function VizualizacaoEstacao() {
                         )}
                     </div>
 
-                    <div className="card grafico">
-                        <Chart type="bar" data={chartData} options={chartOptions} />
-                    </div>
 
                 </div>
             </S.View>
