@@ -10,13 +10,42 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Toast } from "primereact/toast";
 
-/* interface CadastroAlertas {
-} */
+
+interface CadastroAlert {
+    nome: string;
+    mensagem: string;
+    condicao: string;
+  };
 
 
-function CadastroAlerta() {
+function CadastroAlertas() {
     const navigate = useNavigate();
-    const [value, setValue] = useState<string>('');
+    const cadastroAlerta = useCallback(async (data: CadastroAlert) => {
+        await api
+          .post<CadastroAlert>(`/alerta/cadastro`, {
+                nome: data.nome,
+                mensagem: data.mensagem,
+                condicao: data.condicao,
+          })
+          .then(function (response) {
+                console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error)
+          });
+    }, []);
+
+      const onSubmit = useCallback(async (data: CadastroAlert) => {
+        cadastroAlerta(data);
+      }, []);
+    
+      const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<CadastroAlert>({
+        mode: "onBlur",
+    });
 
     return (
         <>
@@ -29,22 +58,18 @@ function CadastroAlerta() {
                         <div className="card">
                             <div className="campos">
                                 <p>Cadastrar Alertas</p>
-                                <form>
+                                <form onSubmit={handleSubmit(onSubmit)}>
                                     <div className="parametroNome">
                                         <label htmlFor="username">Nome</label>
-                                        <InputText className="inputNome" type="text" placeholder="Ex.: Temperatura Max" required />
+                                        <InputText className="inputNome" type="text" placeholder="Ex.: Temperatura Max" {...register("nome")} required />
                                     </div>
                                     <div className="descricao">
                                         <label htmlFor="description">Mensagem</label>
-                                        <InputTextarea value={value} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setValue(e.target.value)} rows={7} required />
+                                        <InputTextarea rows={7} {...register("mensagem")} required />
                                     </div>
                                     <div className="localizacao">
                                         <label htmlFor="localization">Condição</label>
-                                        <InputText type="number" placeholder="" required />
-                                    </div>
-                                    <div className="localizacao">
-                                        <label htmlFor="localization">Duração</label>
-                                        <InputText type="number" placeholder="" required />
+                                        <InputText type="text" placeholder="" {...register("condicao")} required />
                                     </div>
                                     <div className="botao">
                                         <Button label="Cadastrar" type="submit" onSubmit={() => navigate(-1)} className="p-button-outlined" />
@@ -58,4 +83,4 @@ function CadastroAlerta() {
         </>
     )
 }
-export default CadastroAlerta;
+export default CadastroAlertas;

@@ -4,7 +4,6 @@ import { InputTextarea } from "primereact/inputtextarea";
 import * as S from "./styles";
 import { Button } from 'primereact/button';
 import NavbarAdmin from '../../../Components/NavbarAdmin';
-import axios from 'axios';
 import { api } from "../../../service/api";
 import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
