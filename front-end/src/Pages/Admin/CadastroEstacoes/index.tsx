@@ -43,10 +43,9 @@ interface EstacaoDados {
 }
 
 function CadastroEstacao() {
-    const [selectedParametro, setSelectedParametro] = useState<EstacaoDados | null>(null);
+    const [selectedParametro, setSelectedParametro] = useState<EstacaoDados[]>([]);
     const [parametros, setParametros] = useState<EstacaoDados[]>([])
     const [estacao, setEstacao] = useState<EstacaoDados>();
-
     const [visible2, setVisible2] = useState<boolean>(false);
     const [id, setId] = useState<number>();
     const [value, setValue] = useState<string>();
@@ -69,6 +68,7 @@ function CadastroEstacao() {
             toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Algo deu errado...', life: 3000 });
         });
     }, []);
+
     const postParametros = async () => {
         const data = {
             id_estacao: String(id),
@@ -86,7 +86,7 @@ function CadastroEstacao() {
                 console.log(error);
             })
     };
-    
+
     const getEstacao = async () => {
         await api.get(`/ehp/parametrosEstacao/${id}`).then((res) => {
             setEstacao(res.data);
@@ -94,10 +94,6 @@ function CadastroEstacao() {
             console.log(error);
         })
     }
-
-    useEffect(() => {
-        getEstacao();
-    }, [id]);
 
     const getAllParametros = async () => {
         const response = await api.get<EstacaoDados[]>(`/parametro/buscar-parametro`);
@@ -109,7 +105,6 @@ function CadastroEstacao() {
     }, [])
 
     const onSubmit = useCallback(
-
         async (data: CadastroEstacoes) => {
             await cadastrarEstacao(data);
         },
@@ -136,9 +131,9 @@ function CadastroEstacao() {
                     <NavbarAdmin />
                 </header>
                 <main>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="card">
-                            <div className="campos">
+                    <div className="card">
+                        <div className="campos">
+                            <form onSubmit={handleSubmit(onSubmit)}>
                                 <p>Cadastrar Estação</p>
                                 <div className="estacaoNome">
                                     <label htmlFor="username">Nome da estação</label>
@@ -150,19 +145,20 @@ function CadastroEstacao() {
                                     <InputText type="text" placeholder="Latitude" value={values} {...register("latitude")} required />
                                     <InputText type="text" placeholder="Longitude" value={valuess}  {...register("longitude")} required />
                                 </div>
-                                <Button label="Adicionar Parametros" style={{ marginTop:"10px" }} onClick={() => setVisible2(true)} />
-                                <Dialog header="Associar Parâmetros" visible={visible2} style={{ width: '50vw' }} onHide={() => setVisible2(false)}>
-                                    <div className="card flex justify-content-center">
-                                        <MultiSelect value={selectedParametro} onChange={(e) => setSelectedParametro(e.value)} options={parametros} optionLabel="tipo"
-                                            filter placeholder="Pârametros Selecionados" maxSelectedLabels={3} className="w-full md:w-100rem" optionValue="id" />
-                                    </div>
-                                </Dialog>
                                 <div className="botao">
                                     <Button label="Cadastrar" type="submit" className="p-button-outlined" />
                                 </div>
-                            </div>
+                            </form>
+                            <Button label="Adicionar Parametros" style={{ marginTop: "10px" }} onClick={() => setVisible2(true)} />
+                            <Dialog header="Associar Parâmetros" visible={visible2} style={{ width: '50vw' }} onHide={() => setVisible2(false)}>
+                                <div className="card flex justify-content-center">
+                                    <MultiSelect value={selectedParametro} onChange={(e) => setSelectedParametro(e.value)} options={parametros} optionLabel="tipo"
+                                        filter placeholder="Pârametros Selecionados" maxSelectedLabels={3} className="w-full md:w-100rem" optionValue="id" />
+                                </div>
+                                <Button label="Adicionar Parametro" style={{ marginLeft: '69%', marginTop: '25px' }} icon="pi pi-check" onClick={() => postParametros()} autoFocus type="submit" />
+                            </Dialog>
                         </div>
-                    </form>
+                    </div>
                 </main>
             </section>
         </S.Container>
