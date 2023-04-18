@@ -22,7 +22,7 @@ function CadastroAlertas() {
     const navigate = useNavigate();
     const cadastroAlerta = useCallback(async (data: CadastroAlert) => {
         await api
-          .post<CadastroAlert>(`/alerta/cadastro`, {
+          .post<CadastroAlert>(`/alerta/cadastrar`, {
                 nome: data.nome,
                 mensagem: data.mensagem,
                 condicao: data.condicao,
@@ -72,7 +72,7 @@ function CadastroAlertas() {
                                         <InputText type="text" placeholder="" {...register("condicao")} required />
                                     </div>
                                     <div className="botao">
-                                        <Button label="Cadastrar" type="submit" onSubmit={() => navigate(-1)} className="p-button-outlined" />
+                                        <Button label="Cadastrar" type="submit" onSubmit={() => navigate(`/`)} className="p-button-outlined" />
                                     </div>
                                 </form>
                             </div>
