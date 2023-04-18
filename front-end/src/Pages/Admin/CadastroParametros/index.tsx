@@ -1,7 +1,6 @@
-import React, { useCallback, useState, useEffect, useRef } from "react";
+import { useCallback,useRef } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
-import { MultiSelect, MultiSelectChangeEvent } from 'primereact/multiselect';
 import * as S from "./styles";
 import { Button } from 'primereact/button';
 import NavbarAdmin from '../../../Components/NavbarAdmin';
@@ -15,25 +14,22 @@ interface CadastroParametros {
     unidade_medida: string;
     fator_conversao: string;
     offset: string;
+    descricao: string
 }
-
-
 function CadastroEstacao() {
     const navigate = useNavigate();
     const toast = useRef<Toast>(null);
-
     const cadastroParametros = useCallback(async (data: CadastroParametros) => {
         await api
             .post<CadastroParametros>(`/parametro/cadastrar-parametro`, {
                 tipo: data.tipo,
+                descricao: data.descricao,
                 unidade_medida: data.unidade_medida,
                 fator_conversao: data.fator_conversao,
                 offset: data.offset,
-
             })
             .then((response) => {
                 console.log(response);
-
             })
             .catch(function (error) {
                 console.log(error)
@@ -56,7 +52,7 @@ function CadastroEstacao() {
     return (
         <>
             <S.Container>
-            <Toast ref={toast} />
+                <Toast ref={toast} />
                 <section>
                     <header>
                         <NavbarAdmin />
@@ -69,6 +65,10 @@ function CadastroEstacao() {
                                     <div className="parametroNome">
                                         <label htmlFor="username">Nome</label>
                                         <InputText className="inputNome" type="text" placeholder="Ex.: Temperatura" {...register("tipo")} required />
+                                    </div>
+                                    <div className="descricao">
+                                        <label htmlFor="description">Descrição</label>
+                                        <InputTextarea rows={7} {...register("descricao")} required />
                                     </div>
                                     <div className="localizacao">
                                         <label htmlFor="localization">Medida</label>
