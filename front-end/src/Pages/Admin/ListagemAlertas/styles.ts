@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 
-export const ListagemParametros = styled.div`
+export const ListagemAlertas = styled.div`
 section{
     main{
         h1{

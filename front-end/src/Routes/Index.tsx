@@ -6,10 +6,12 @@ import ListagemEstacao from "../Pages/Admin/ListagemEstacoes";
 import VizualizacaoEstacao from "../Pages/Admin/VisualizacaoEstacao";
 import Login from "../Pages/Admin/Login";
 import ListagemParametros from "../Pages/Admin/ListagemParametros";
+import ListagemAlertas from "../Pages/Admin/ListagemAlertas";
 
 function Routes() {
     return (
         <RoutesWrapper>
+            <Route path="/listagem-alertas" element={< ListagemAlertas />} />
             <Route path="/listagem-parametros" element={< ListagemParametros />} />
             <Route path="/cadastro-estacao" element={< CadastroEstacao />} />
             <Route path="/cadastro-parametro" element={< CadastroParametro />} />

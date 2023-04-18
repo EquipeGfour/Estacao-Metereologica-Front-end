@@ -8,22 +8,19 @@ import { api } from '../../../service/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 
-interface Parametro {
+interface Alerta {
     id: number;
-    tipo: string;
-    descricao: string;
-    unidade_medida: string;
-    fator_conversao: string;
-    offset: string;
+    nome: string;
+    mensagem: string;
+    condicao: string;
 }
+function ListagemAlertas() {
 
-function ListagemParametros() {
-
-    const [parametros, setParametros] = useState<Parametro[] | any>([]);
+    const [alertas, setAlertas] = useState<Alerta[] | any>([]);
     const navigate = useNavigate();
     const { id } = useParams();
     const onSubmit: SubmitHandler<FieldValues> = useCallback(async (data) => {
-        setParametros(data as Parametro);
+        setAlertas(data as Alerta);
     }, []);
 
     const {
@@ -35,29 +32,27 @@ function ListagemParametros() {
     });
 
 
-    async function getAllParametros() {
-        const response = await api.get<Parametro[]>("/parametro/buscar-parametro");
-        setParametros(response.data);
+    async function getAllAlertas() {
+        const response = await api.get<Alerta[]>("/alerta/buscar");
+        setAlertas(response.data);
     }
 
     useEffect(() => {
-        getAllParametros();
+        getAllAlertas();
     }, []);
 
 
     const onRowEditComplete = async (e: DataTableRowEditCompleteEvent) => {
-        let _parametros = [...parametros];
+        let _alertas = [...alertas];
         let { newData, index } = e;
 
-        _parametros[index] = newData;
+        _alertas[index] = newData;
 
         await api
-            .put(`/parametro/atualizar-parametro/${newData.id}`, {
-                tipo: newData.tipo,
-                descricao: newData.descricao,
-                unidade_medida: newData.unidade_medida,
-                fator_conversao: newData.fator_conversao,
-                offset: newData.offset
+            .put(`/alerta/editar/${newData.id}`, {
+                nome: newData.nome,
+                mensagem: newData.mensagem,
+                condicao: newData.condicao
             })
             .then(function (response) {
                 if (response) {
@@ -73,15 +68,15 @@ function ListagemParametros() {
         return <InputText type="text" value={options.value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => options.editorCallback(e.target.value)} />;
     };
 
-    return(
+    return (
         <>
-            <S.ListagemParametros>
+            <S.ListagemAlertas>
                 <section>
                     <header>
-                        <NavbarAdmin/>
+                        <NavbarAdmin />
                     </header>
                     <main>
-                        <h1>Parâmetros</h1>
+                        <h1>Alertas</h1>
                         <div className='pesquisa'>
                             <span className="p-input-icon-left">
                                 <i className="pi pi-search" />
@@ -90,21 +85,19 @@ function ListagemParametros() {
                         </div>
                         <div className='conteudo'>
                             <form onSubmit={handleSubmit(onSubmit)}>
-                                <DataTable value={parametros} editMode="row" dataKey="id" onRowEditComplete={onRowEditComplete} tableStyle={{ minWidth: '50rem' }} type='submit'>
-                                    <Column field="tipo" header="Tipo" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
-                                    <Column field="descricao" header="Descrição" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
-                                    <Column field="unidade_medida" header="Unidade de Medida" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
-                                    <Column field="fator_conversao" header="Fator de Conversão" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
-                                    <Column field="offset" header="OffSet" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
+                                <DataTable value={alertas} editMode="row" dataKey="id" onRowEditComplete={onRowEditComplete} tableStyle={{ minWidth: '50rem' }} type='submit'>
+                                    <Column field="nome" header="Nome" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
+                                    <Column field="mensagem" header="Mensagem" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
+                                    <Column field="condicao" header="Condição" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
                                     <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}></Column>
                                 </DataTable>
                             </form>
                         </div>
                     </main>
                 </section>
-            </S.ListagemParametros>
+            </S.ListagemAlertas>
         </>
     )
 }
 
-export default ListagemParametros;
+export default ListagemAlertas;
