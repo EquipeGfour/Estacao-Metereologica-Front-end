@@ -24,7 +24,7 @@ function Adm_Home() {
                     <div className="listar">
                         <div className="estacoes">
                             <h1>Estação</h1>
-                            <i className="pi pi-print" style={{ fontSize: '6rem' }}></i>
+                            <i className="pi pi-home" style={{ fontSize: '6rem' }}></i>
                             <div className="button">
                                 <Button label="Cadastrar Estação" outlined onClick={() => navigate(`/cadastro-estacao`)}/>
                                 <Button label="Listagem de Estações" outlined onClick={() => navigate(`/`)}/>
@@ -40,7 +40,7 @@ function Adm_Home() {
                         </div>
                         <div className="alertas">
                             <h1>Alerta</h1>
-                            <i className="pi pi-stopwatch" style={{ fontSize: '6rem' }}></i>
+                            <i className="pi pi-exclamation-triangle" style={{ fontSize: '6rem' }}></i>
                             <div className="button">
                                 <Button label="Cadastro de Alertas" outlined onClick={() => navigate(`/cadastro-alerta`)}/>
                                 <Button label="Listagem de Alertas" outlined onClick={() => navigate(`/`)}/>

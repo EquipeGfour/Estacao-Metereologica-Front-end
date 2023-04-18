@@ -16,9 +16,11 @@ export const Container = styled.div`
       text-align: center;
       h1 {
         font-size: 60px;
+        color:#5652C7;
       }
       h2 {
         font-size: 30px;
+        
       }
     }
     .listar {
@@ -27,6 +29,11 @@ export const Container = styled.div`
       gap: 8em;
       align-items: center;
       h1 {
+        color: #74DB23;
+
+      }
+      i{
+        color: #74DB23;
       }
       a {
         display: flex;
