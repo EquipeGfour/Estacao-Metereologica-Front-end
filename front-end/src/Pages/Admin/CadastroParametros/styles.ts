@@ -15,7 +15,8 @@ section{
         position: fixed;
     }
     main{
-        margin-top: 4em;
+        margin-top: 2em;
+        margin-bottom: 1em;
         display: flex;
         flex-direction: column;
         justify-content: center;
