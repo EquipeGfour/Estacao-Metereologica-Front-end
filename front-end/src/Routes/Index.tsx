@@ -6,6 +6,8 @@ import CadastroUsuario from "../Pages/Admin/CadastroUsuario";
 import ListagemEstacao from "../Pages/Admin/ListagemEstacoes";
 import VizualizacaoEstacao from "../Pages/Admin/VisualizacaoEstacao";
 import Login from "../Pages/Admin/Login";
+import HomeAdmin from "../Pages/Admin/HomeAdmin";
+
 
 function Routes() {
     return (
@@ -17,6 +19,7 @@ function Routes() {
             <Route path="/visualizacao-estacao" element={< VizualizacaoEstacao />} />
             <Route path="/visualizacao-estacao/:id" element={< VizualizacaoEstacao />} />
             <Route path="/login" element={< Login />} />
+            <Route path="/homeAdmin" element={< HomeAdmin />} />
             <Route path="/" element={< ListagemEstacao />} />
         </RoutesWrapper>
     );
