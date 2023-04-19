@@ -12,6 +12,7 @@ import { Toast } from "primereact/toast";
 
 interface CadastroParametros {
     tipo: string;
+    descricao: string;
     unidade_medida: string;
     fator_conversao: string;
     offset: string;
@@ -26,6 +27,7 @@ function CadastroEstacao() {
         await api
             .post<CadastroParametros>(`/parametro/cadastrar-parametro`, {
                 tipo: data.tipo,
+                descricao: data.descricao,
                 unidade_medida: data.unidade_medida,
                 fator_conversao: data.fator_conversao,
                 offset: data.offset,
@@ -42,7 +44,7 @@ function CadastroEstacao() {
 
     const onSubmit = useCallback(async (data: CadastroParametros) => {
         cadastroParametros(data);
-        navigate(-1)
+        navigate("/listagem-parametros")
     }, []);
 
     const {
@@ -69,6 +71,10 @@ function CadastroEstacao() {
                                     <div className="parametroNome">
                                         <label htmlFor="username">Nome</label>
                                         <InputText className="inputNome" type="text" placeholder="Ex.: Temperatura" {...register("tipo")} required />
+                                    </div>
+                                    <div className="descricao">
+                                        <label htmlFor="description">Descrição</label>
+                                        <InputText type="text" {...register("descricao")} required />
                                     </div>
                                     <div className="localizacao">
                                         <label htmlFor="localization">Medida</label>
