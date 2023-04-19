@@ -7,6 +7,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { api } from '../../../service/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import { Button } from 'primereact/button';
+import { Toolbar } from 'primereact/toolbar';
 
 interface Parametro {
     id: number;
@@ -22,6 +24,7 @@ function ListagemParametros() {
     const [parametros, setParametros] = useState<Parametro[] | any>([]);
     const navigate = useNavigate();
     const { id } = useParams();
+    const [selectedParametros, setSelectedParametros] = useState<Parametro[] | any>([]);
     const onSubmit: SubmitHandler<FieldValues> = useCallback(async (data) => {
         setParametros(data as Parametro);
     }, []);
@@ -72,6 +75,33 @@ function ListagemParametros() {
     const textEditor = (options: any) => {
         return <InputText type="text" value={options.value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => options.editorCallback(e.target.value)} />;
     };
+    
+    const leftToolbarTemplate = () => {
+        return (
+            <div className="flex flex-wrap gap-2">
+                <Button label="Excluir" icon="pi pi-trash" severity="danger" 
+                onClick={() => deleteSelectedParametros()} 
+                disabled={!selectedParametros || !selectedParametros.length} />
+            </div>
+        );
+    };
+
+    const deleteSelectedParametros =  () => {
+        let _parametros = parametros.filter((val:any) => selectedParametros.includes(val));
+
+        setParametros(_parametros);
+        
+        _parametros.map (async (pr:any) => {
+            await api.delete(`/parametro/excluir-parametro/${pr.id}`)
+            .then((res) => {
+                if(res) navigate(0)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+        })
+        setSelectedParametros(null);
+    };
 
     return(
         <>
@@ -90,7 +120,9 @@ function ListagemParametros() {
                         </div>
                         <div className='conteudo'>
                             <form onSubmit={handleSubmit(onSubmit)}>
-                                <DataTable value={parametros} editMode="row" dataKey="id" onRowEditComplete={onRowEditComplete} tableStyle={{ minWidth: '50rem' }} type='submit'>
+                                <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
+                                <DataTable value={parametros} editMode="row" dataKey="id" onRowEditComplete={onRowEditComplete} tableStyle={{ minWidth: '50rem' }} type='submit' selection={selectedParametros} onSelectionChange={(e) => setSelectedParametros(e.value)}>
+                                    <Column selectionMode="multiple" exportable={false}></Column>
                                     <Column field="tipo" header="Tipo" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
                                     <Column field="descricao" header="Descrição" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
                                     <Column field="unidade_medida" header="Unidade de Medida" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>

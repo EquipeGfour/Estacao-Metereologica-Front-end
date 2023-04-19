@@ -7,6 +7,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { api } from '../../../service/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import { Button } from 'primereact/button';
+import { Toolbar } from 'primereact/toolbar';
+
 
 interface Alerta {
     id: number;
@@ -19,6 +22,7 @@ function ListagemAlertas() {
     const [alertas, setAlertas] = useState<Alerta[] | any>([]);
     const navigate = useNavigate();
     const { id } = useParams();
+    const [selectedAlertas, setSelectedAlertas] = useState<Alerta[] | any>([]);
     const onSubmit: SubmitHandler<FieldValues> = useCallback(async (data) => {
         setAlertas(data as Alerta);
     }, []);
@@ -68,6 +72,33 @@ function ListagemAlertas() {
         return <InputText type="text" value={options.value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => options.editorCallback(e.target.value)} />;
     };
 
+    const leftToolbarTemplate = () => {
+        return (
+            <div className="flex flex-wrap gap-2">
+                <Button label="Excluir" icon="pi pi-trash" severity="danger" 
+                onClick={() => deleteSelectedAlertas()} 
+                disabled={!selectedAlertas || !selectedAlertas.length} />
+            </div>
+        );
+    };
+
+    const deleteSelectedAlertas =  () => {
+        let _alertas = alertas.filter((val:any) => selectedAlertas.includes(val));
+
+        setAlertas(_alertas);
+
+        _alertas.map (async (pr:any) => {
+            await api.delete(`/alerta/excluir/${pr.id}`)
+            .then((res) => {
+                if(res) navigate(0)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+        })
+        setSelectedAlertas(null);
+    };
+
     return (
         <>
             <S.ListagemAlertas>
@@ -85,7 +116,9 @@ function ListagemAlertas() {
                         </div>
                         <div className='conteudo'>
                             <form onSubmit={handleSubmit(onSubmit)}>
-                                <DataTable value={alertas} editMode="row" dataKey="id" onRowEditComplete={onRowEditComplete} tableStyle={{ minWidth: '50rem' }} type='submit'>
+                                <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
+                                <DataTable value={alertas} editMode="row" dataKey="id" onRowEditComplete={onRowEditComplete} tableStyle={{ minWidth: '50rem' }} type='submit' selection={selectedAlertas} onSelectionChange={(e) => setSelectedAlertas(e.value)}>
+                                    <Column selectionMode="multiple" exportable={false}></Column>
                                     <Column field="nome" header="Nome" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
                                     <Column field="mensagem" header="Mensagem" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
                                     <Column field="condicao" header="Condição" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
