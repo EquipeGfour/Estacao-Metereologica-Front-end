@@ -15,8 +15,7 @@ section{
         position: fixed;
     }
     main{
-        margin-top: 2em;
-        margin-bottom: 1em;
+        margin-top: 4em;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -39,7 +38,7 @@ section{
                 width: 25vw;
                 padding: 5%;
     
-                .parametroNome{
+                .estacaoNome{
                     display: flex;
                     flex-direction: column;
     
@@ -70,11 +69,19 @@ section{
                         text-align: left;
                         margin-top: 5px;
                     }
+
                 }
-    
+                small{
+                    margin-top: 5px ;
+                    display: flex;
+                    align-items: left;
+                    color: #5652C7;
+                }
+                
                 .parametros-e-alertas{
                     display: flex;
                     flex-direction: row;
+                    justify-content: space-between;
     
                     label{
                         align-items: left;
@@ -84,7 +91,13 @@ section{
                     .parametros{
                         display: flex;
                         flex-direction: column;
-                        width: 100%;
+                        width: 48%;
+                    }
+                    .alertas{
+                        display: flex;
+                        flex-direction: column;
+                        width: 48%;
+                        
                     }
                 }
                 .botao{
@@ -94,6 +107,18 @@ section{
                     Button{
                         width: 100%;
                     }
+                }
+                .linha{
+                    margin-top: 18px ;
+                    width: 100%;
+                    border: 1px solid #858796;
+                }
+                .criar-conta{
+                    margin-top: 18px ;
+                    display: flex;
+                    align-items: left;
+                    color: #3E3B8E;
+                    font-size: 1vw;
                 }
             }
         } 
