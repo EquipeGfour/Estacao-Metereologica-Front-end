@@ -3,12 +3,13 @@ import { Column } from 'primereact/column';
 import { InputText } from "primereact/inputtext";
 import NavbarAdmin from "../../../Components/NavbarAdmin";
 import * as S from "./styles";
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { api } from '../../../service/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
+import { Toast } from "primereact/toast";
 
 
 interface Alerta {
@@ -18,7 +19,7 @@ interface Alerta {
     condicao: string;
 }
 function ListagemAlertas() {
-
+    const toast = useRef<Toast>(null);
     const [alertas, setAlertas] = useState<Alerta[] | any>([]);
     const navigate = useNavigate();
     const { id } = useParams();
@@ -61,10 +62,12 @@ function ListagemAlertas() {
             .then(function (response) {
                 if (response) {
                     navigate(0);
+                    toast.current?.show({ severity: 'success', summary: 'Successo', detail: 'Alerta Editado!!', life: 3000 });
                 }
             })
             .catch((err) => {
                 console.log(err);
+                toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Algo deu errado...', life: 3000 });
             });
     };
 
@@ -75,26 +78,28 @@ function ListagemAlertas() {
     const leftToolbarTemplate = () => {
         return (
             <div className="flex flex-wrap gap-2">
-                <Button label="Excluir" icon="pi pi-trash" severity="danger" 
-                onClick={() => deleteSelectedAlertas()} 
-                disabled={!selectedAlertas || !selectedAlertas.length} />
+                <Button label="Excluir" icon="pi pi-trash" severity="danger"
+                    onClick={() => deleteSelectedAlertas()}
+                    disabled={!selectedAlertas || !selectedAlertas.length} />
             </div>
         );
     };
 
-    const deleteSelectedAlertas =  () => {
-        let _alertas = alertas.filter((val:any) => selectedAlertas.includes(val));
+    const deleteSelectedAlertas = () => {
+        let _alertas = alertas.filter((val: any) => selectedAlertas.includes(val));
 
         setAlertas(_alertas);
 
-        _alertas.map (async (pr:any) => {
+        _alertas.map(async (pr: any) => {
             await api.delete(`/alerta/excluir/${pr.id}`)
-            .then((res) => {
-                if(res) navigate(0)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+                .then((res) => {
+                    if (res) navigate(0)
+                    toast.current?.show({ severity: 'success', summary: 'Successo', detail: 'Alerta Deletado!!', life: 3000 });
+                })
+                .catch((err) => {
+                    console.log(err)
+                    toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Algo deu errado...', life: 3000 });
+                })
         })
         setSelectedAlertas(null);
     };
@@ -102,6 +107,7 @@ function ListagemAlertas() {
     return (
         <>
             <S.ListagemAlertas>
+                <Toast ref={toast} />
                 <section>
                     <header>
                         <NavbarAdmin />
@@ -118,10 +124,10 @@ function ListagemAlertas() {
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
                                 <DataTable value={alertas} editMode="row" dataKey="id" onRowEditComplete={onRowEditComplete} tableStyle={{ minWidth: '50rem' }} type='submit' selection={selectedAlertas} onSelectionChange={(e) => setSelectedAlertas(e.value)}>
-                                    <Column selectionMode="multiple" exportable={false}></Column>
-                                    <Column field="nome" header="Nome" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
-                                    <Column field="mensagem" header="Mensagem" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
-                                    <Column field="condicao" header="Condição" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
+                                    <Column selectionMode="multiple" style={{ width: '1%' }} exportable={false}></Column>
+                                    <Column field="nome" header="Nome" editor={(options) => textEditor(options)} style={{ width: '25%' }}></Column>
+                                    <Column field="mensagem" header="Mensagem" editor={(options) => textEditor(options)} style={{ width: '30%' }}></Column>
+                                    <Column field="condicao" header="Condição" editor={(options) => textEditor(options)} style={{ width: '30%' }}></Column>
                                     <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}></Column>
                                 </DataTable>
                             </form>

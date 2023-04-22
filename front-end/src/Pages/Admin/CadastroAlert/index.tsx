@@ -15,31 +15,36 @@ interface CadastroAlert {
     nome: string;
     mensagem: string;
     condicao: string;
-  };
+};
 
 
 function CadastroAlertas() {
     const navigate = useNavigate();
+    const toast = useRef<Toast>(null);
+
     const cadastroAlerta = useCallback(async (data: CadastroAlert) => {
         await api
-          .post<CadastroAlert>(`/alerta/cadastrar`, {
+            .post<CadastroAlert>(`/alerta/cadastrar`, {
                 nome: data.nome,
                 mensagem: data.mensagem,
                 condicao: data.condicao,
-          })
-          .then(function (response) {
+            })
+            .then(function (response) {
                 console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error)
-          });
+                toast.current?.show({ severity: 'success', summary: 'Successo', detail: 'Alerta cadastrado!!', life: 3000 });
+            })
+            .catch(function (error) {
+                console.log(error)
+                toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Algo deu errado...', life: 3000 });
+            });
     }, []);
 
-      const onSubmit = useCallback(async (data: CadastroAlert) => {
+    const onSubmit = useCallback(async (data: CadastroAlert) => {
         cadastroAlerta(data);
-      }, []);
-    
-      const {
+        navigate("/listagem-alertas")
+    }, []);
+
+    const {
         register,
         handleSubmit,
         formState: { errors },
@@ -50,6 +55,7 @@ function CadastroAlertas() {
     return (
         <>
             <S.Container>
+                <Toast ref={toast} />
                 <section>
                     <header>
                         <NavbarAdmin />

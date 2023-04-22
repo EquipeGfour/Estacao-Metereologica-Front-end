@@ -8,11 +8,11 @@ section{
             display:flex;
             justify-content:center;
             color:#5652C7;
-            font-size: 50px;
+            font-size: 40px;
         }
         .pesquisa{
             margin-left: 5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
             display: flex;
             flex-direction: row;
             .barra{
