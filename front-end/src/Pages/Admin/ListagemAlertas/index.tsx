@@ -61,8 +61,8 @@ function ListagemAlertas() {
             })
             .then(function (response) {
                 if (response) {
-                    navigate(0);
-                    toast.current?.show({ severity: 'success', summary: 'Successo', detail: 'Alerta Editado!!', life: 3000 });
+                    getAllAlertas();
+                    toast.current?.show({ severity: 'success', summary: 'Sucesso', detail: 'Alerta Editado!!', life: 3000 });
                 }
             })
             .catch((err) => {
@@ -93,7 +93,7 @@ function ListagemAlertas() {
         _alertas.map(async (pr: any) => {
             await api.delete(`/alerta/excluir/${pr.id}`)
                 .then((res) => {
-                    if (res) navigate(0)
+                    getAllAlertas();
                     toast.current?.show({ severity: 'success', summary: 'Successo', detail: 'Alerta Deletado!!', life: 3000 });
                 })
                 .catch((err) => {

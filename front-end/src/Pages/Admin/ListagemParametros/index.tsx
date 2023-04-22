@@ -65,8 +65,8 @@ function ListagemParametros() {
             })
             .then(function (response) {
                 if (response) {
-                    toast.current?.show({ severity: 'success', summary: 'Successo', detail: 'Parametro Editado!!', life: 3000 });
-                    navigate(0);
+                    toast.current?.show({ severity: 'success', summary: 'Sucesso', detail: 'Parametro Editado!!', life: 3000 });
+                    getAllParametros();
                 }
             })
             .catch((err) => {
@@ -97,8 +97,8 @@ function ListagemParametros() {
         _parametros.map(async (pr: any) => {
             await api.delete(`/parametro/excluir-parametro/${pr.id}`)
                 .then((res) => {
-                    toast.current?.show({ severity: 'success', summary: 'Successo', detail: 'Parametro Deletado!!', life: 3000 });
-                    if (res) navigate(0)
+                    toast.current?.show({ severity: 'success', summary: 'Sucesso', detail: 'Parametro Deletado!!', life: 3000 });
+                    getAllParametros();
                 })
                 .catch((err) => {
                     toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Algo deu errado...', life: 3000 });
