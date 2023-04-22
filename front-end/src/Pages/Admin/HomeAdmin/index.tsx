@@ -14,9 +14,6 @@ function Adm_Home() {
     return (
         <>
             <S.Container>
-                <header>
-                    <NavbarAdmin />
-                </header>
                 <main>
                     <div className="welcome">
                         <h1>Bem Vindo, Administrador!</h1>
@@ -27,7 +24,7 @@ function Adm_Home() {
                             <i className="pi pi-home" style={{ fontSize: '6rem' }}></i>
                             <div className="button">
                                 <Button label="Cadastrar Estação" outlined onClick={() => navigate(`/cadastro-estacao`)}/>
-                                <Button label="Listagem de Estações" outlined onClick={() => navigate(`/`)}/>
+                                <Button label="Listagem de Estações" outlined onClick={() => navigate(`/listagem-estacao`)}/>
                             </div>
                         </div>
                         <div className="parametros">
@@ -35,7 +32,7 @@ function Adm_Home() {
                             <i className="pi pi-bolt" style={{ fontSize: '6rem' }}></i>
                             <div className="button">
                                 <Button label="Cadastro de Parâmetros" outlined onClick={() => navigate(`/cadastro-parametro`)}/>
-                                <Button label="Listagem de Parâmetros" outlined onClick={() => navigate(`/`)}/>
+                                <Button label="Listagem de Parâmetros" outlined onClick={() => navigate(`/listagem-parametros`)}/>
                             </div>
                         </div>
                         <div className="alertas">
@@ -43,7 +40,7 @@ function Adm_Home() {
                             <i className="pi pi-exclamation-triangle" style={{ fontSize: '6rem' }}></i>
                             <div className="button">
                                 <Button label="Cadastro de Alertas" outlined onClick={() => navigate(`/cadastro-alerta`)}/>
-                                <Button label="Listagem de Alertas" outlined onClick={() => navigate(`/`)}/>
+                                <Button label="Listagem de Alertas" outlined onClick={() => navigate(`/listagem-alertas`)}/>
                             </div>
                         </div>
                     </div>

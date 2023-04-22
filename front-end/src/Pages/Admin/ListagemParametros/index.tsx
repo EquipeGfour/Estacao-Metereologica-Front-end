@@ -3,12 +3,13 @@ import { Column } from 'primereact/column';
 import { InputText } from "primereact/inputtext";
 import NavbarAdmin from "../../../Components/NavbarAdmin";
 import * as S from "./styles";
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { api } from '../../../service/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
+import { Toast } from "primereact/toast";
 
 interface Parametro {
     id: number;
@@ -20,7 +21,7 @@ interface Parametro {
 }
 
 function ListagemParametros() {
-
+    const toast = useRef<Toast>(null);
     const [parametros, setParametros] = useState<Parametro[] | any>([]);
     const navigate = useNavigate();
     const { id } = useParams();
@@ -64,51 +65,56 @@ function ListagemParametros() {
             })
             .then(function (response) {
                 if (response) {
+                    toast.current?.show({ severity: 'success', summary: 'Successo', detail: 'Parametro Editado!!', life: 3000 });
                     navigate(0);
                 }
             })
             .catch((err) => {
                 console.log(err);
+                toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Algo deu errado...', life: 3000 });
             });
     };
 
     const textEditor = (options: any) => {
         return <InputText type="text" value={options.value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => options.editorCallback(e.target.value)} />;
     };
-    
+
     const leftToolbarTemplate = () => {
         return (
             <div className="flex flex-wrap gap-2">
-                <Button label="Excluir" icon="pi pi-trash" severity="danger" 
-                onClick={() => deleteSelectedParametros()} 
-                disabled={!selectedParametros || !selectedParametros.length} />
+                <Button label="Excluir" icon="pi pi-trash" severity="danger"
+                    onClick={() => deleteSelectedParametros()}
+                    disabled={!selectedParametros || !selectedParametros.length} />
             </div>
         );
     };
 
-    const deleteSelectedParametros =  () => {
-        let _parametros = parametros.filter((val:any) => selectedParametros.includes(val));
+    const deleteSelectedParametros = () => {
+        let _parametros = parametros.filter((val: any) => selectedParametros.includes(val));
 
         setParametros(_parametros);
-        
-        _parametros.map (async (pr:any) => {
+
+        _parametros.map(async (pr: any) => {
             await api.delete(`/parametro/excluir-parametro/${pr.id}`)
-            .then((res) => {
-                if(res) navigate(0)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+                .then((res) => {
+                    toast.current?.show({ severity: 'success', summary: 'Successo', detail: 'Parametro Deletado!!', life: 3000 });
+                    if (res) navigate(0)
+                })
+                .catch((err) => {
+                    toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Algo deu errado...', life: 3000 });
+                    console.log(err)
+                })
         })
         setSelectedParametros(null);
     };
 
-    return(
+    return (
         <>
             <S.ListagemParametros>
+                <Toast ref={toast} />
                 <section>
                     <header>
-                        <NavbarAdmin/>
+                        <NavbarAdmin />
                     </header>
                     <main>
                         <h1>Parâmetros</h1>

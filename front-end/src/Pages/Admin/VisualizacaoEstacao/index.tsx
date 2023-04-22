@@ -151,7 +151,7 @@ function VizualizacaoEstacao() {
             .delete(`/estacao/excluir/${id}`)
             .then(function (response) {
                 if (response) {
-                    navigate(`/`);
+                    navigate(`/listagem-estacao`);
                 }
                 toast.current?.show({ severity: 'success', summary: 'Sucesso', detail: 'Estação Deletada.', life: 3000 });
             })

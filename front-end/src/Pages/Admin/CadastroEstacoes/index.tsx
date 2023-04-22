@@ -142,7 +142,7 @@ function CadastroEstacao() {
                                     <InputText className="inputNome" type="text" value={value} {...register("nome")} required />
                                 </div>
                                 <div className="estacaoNome">
-                                    <label htmlFor="username">uid da estação</label>
+                                    <label htmlFor="username">Uid da estação</label>
                                     <InputText className="inputNome" type="text" value={value} {...register("uid")} required />
                                 </div>
                                 <div className="localizacao">
