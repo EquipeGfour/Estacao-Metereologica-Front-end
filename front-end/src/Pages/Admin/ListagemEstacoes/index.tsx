@@ -39,7 +39,7 @@ function ListagemEstacao () {
             <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2">
                 <div className="p-4 border-1 surface-border surface-card border-round">
                     <div className="flex flex-column align-items-center gap-3 py-5">
-                        <img className="w-9 shadow-2 border-round" src={`https://www.agsolve.com.br/imgprodutos/imagens/1006_2.jpg`} alt={estacao.nome} />
+                        <img className="w-6 shadow-2 border-round" src={`https://www.agsolve.com.br/imgprodutos/imagens/1006_2.jpg`} alt={estacao.nome} />
                         <div className="text-2xl font-bold">{estacao.nome}</div>
                         <Button className="font-bold h-3rem w-10rem justify-content-center" onClick={e=>navigate(`/visualizacao-estacao/${estacao.id}`)}>Ver mais</Button>
                     </div>

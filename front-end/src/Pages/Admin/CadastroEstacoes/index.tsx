@@ -19,7 +19,8 @@ interface CadastroEstacoes {
     data_criacao: String,
     latitude: String,
     longitude: String,
-    utc: String
+    utc: String,
+    uid:string
 }
 interface EstacaoDados {
     estacao: {
@@ -60,6 +61,7 @@ function CadastroEstacao() {
             latitude: data.latitude,
             longitude: data.longitude,
             utc: "2023-03-16T17:30:00.000Z",
+            uid:data.uid
         }).then(res => {
             setId(res.data.id);
             toast.current?.show({ severity: 'success', summary: 'Successo', detail: 'Estação cadastrada!!', life: 3000 });
@@ -139,7 +141,10 @@ function CadastroEstacao() {
                                     <label htmlFor="username">Nome da estação</label>
                                     <InputText className="inputNome" type="text" value={value} {...register("nome")} required />
                                 </div>
-                                <br />
+                                <div className="estacaoNome">
+                                    <label htmlFor="username">uid da estação</label>
+                                    <InputText className="inputNome" type="text" value={value} {...register("uid")} required />
+                                </div>
                                 <div className="localizacao">
                                     <label htmlFor="localization">Localização</label>
                                     <InputText type="text" placeholder="Latitude" value={values} {...register("latitude")} required />
