@@ -2,7 +2,6 @@ import * as S from "./visualizacao";
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
-import { Chart } from 'primereact/chart';
 import { InputText } from 'primereact/inputtext';
 import { InputNumber } from 'primereact/inputnumber'
 import NavbarAdmin from "../../../Components/NavbarAdmin";
@@ -152,7 +151,7 @@ function VizualizacaoEstacao() {
             .delete(`/estacao/excluir/${id}`)
             .then(function (response) {
                 if (response) {
-                    navigate(`/`);
+                    navigate(`/listagem-estacao`);
                 }
                 toast.current?.show({ severity: 'success', summary: 'Sucesso', detail: 'Estação Deletada.', life: 3000 });
             })
@@ -197,8 +196,7 @@ function VizualizacaoEstacao() {
                 console.log(err);
             });
     }, []);
-
-    return (
+        return (
         <>
             <Toast ref={toast} />
             <S.View >
@@ -212,13 +210,6 @@ function VizualizacaoEstacao() {
                             <h1>{estacao?.estacao.nome}</h1>
                         </div>
                         <div className='container'>
-                            <div className="descricao">
-                                <p><strong>Descrição:</strong></p>
-                                <p className="m-0">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae
-                                    numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque quas!
-                                </p>
-                            </div>
                             <div className='h2'>
                                 <div className='texto'>
                                     <h2>Localização:</h2>
@@ -239,10 +230,6 @@ function VizualizacaoEstacao() {
                                             <label htmlFor="Nome Estação">Nome Estação</label>
                                             <InputText id="Nome Estação" aria-describedby="Nome Estação-help" defaultValue={estacao?.estacao.nome} required {...register("estacao.nome")} />
                                         </div>
-                                        {/* <div className="flex flex-column gap-2">
-                                            <label htmlFor="Descrição">Descrição:</label>
-                                            <InputText id="Descrição" aria-describedby="Descrição-help" />
-                                        </div> */}
                                         <div className="flex flex-column gap-2">
                                             <label htmlFor="Longetude">Longitude</label>
                                             <InputText id="Longetude" aria-describedby="Longetude-help" defaultValue={estacao?.estacao.longitude} required {...register("estacao.longitude")} />
@@ -251,15 +238,15 @@ function VizualizacaoEstacao() {
                                             <label htmlFor="Latitude">Latitude</label>
                                             <InputText id="Latitude" aria-describedby="Latitude-help" defaultValue={estacao?.estacao.latitude} required {...register("estacao.latitude")} />
                                         </div>
-                                        <Button label="Editar" icon="pi pi-check" onClick={() => setVisible(false)} autoFocus type="submit" />
+                                        <Button label="Editar" icon="pi pi-check" style={{ marginLeft:'85%', marginTop:'25px' }}   onClick={() => setVisible(false)} autoFocus type="submit" />
                                     </form>
                                 </Dialog>
                                 <Dialog header="Associar Parâmetros" visible={visible2} style={{ width: '50vw' }} onHide={() => setVisible2(false)}>
                                     <div className="card flex justify-content-center">
                                         <MultiSelect value={selectedParametro} onChange={(e) => setSelectedParametro(e.value)} options={parametros} optionLabel="tipo"
-                                            filter placeholder="Pârametros Selecionados" maxSelectedLabels={3} className="w-full md:w-20rem" optionValue="id" />
+                                            filter placeholder="Pârametros Selecionados" maxSelectedLabels={3} className="w-full md:w-100rem" optionValue="id" />
                                     </div>
-                                    <Button label="Adicionar Parametro" icon="pi pi-check" onClick={() => postParametros()} autoFocus type="submit" />
+                                    <Button label="Adicionar Parametro" style={{ marginLeft:'69%', marginTop:'25px' }} icon="pi pi-check" onClick={() => postParametros()} autoFocus type="submit" />
                                 </Dialog>
                             </div>
 
@@ -278,9 +265,6 @@ function VizualizacaoEstacao() {
                         )}
                     </div>
 
-                    <div className="card grafico">
-                        <Chart type="bar" data={chartData} options={chartOptions} />
-                    </div>
 
                 </div>
             </S.View>

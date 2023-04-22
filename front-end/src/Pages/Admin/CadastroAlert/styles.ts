@@ -16,14 +16,13 @@ section{
     }
     main{
         margin-top: 4em;
-        margin-bottom: 1em;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         text-align: center;
         .card{
-            margin-top: 3em ;
+            margin-top: 4em;
             display: flex;
             justify-content: center;
             align-items: center;
