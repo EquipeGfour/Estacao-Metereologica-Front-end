@@ -13,6 +13,7 @@ import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect";
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
+import MapComponent from "../../../Components/Map";
 
 interface EstacaoDados {
     estacao: {
@@ -196,7 +197,7 @@ function VizualizacaoEstacao() {
                 console.log(err);
             });
     }, []);
-        return (
+    return (
         <>
             <Toast ref={toast} />
             <S.View >
@@ -210,6 +211,9 @@ function VizualizacaoEstacao() {
                             <h1>{estacao?.estacao.nome}</h1>
                         </div>
                         <div className='container'>
+                            <div className="map">
+                                <MapComponent/>
+                            </div>
                             <div className='h2'>
                                 <div className='texto'>
                                     <h2>Localização:</h2>
@@ -238,7 +242,7 @@ function VizualizacaoEstacao() {
                                             <label htmlFor="Latitude">Latitude</label>
                                             <InputText id="Latitude" aria-describedby="Latitude-help" defaultValue={estacao?.estacao.latitude} required {...register("estacao.latitude")} />
                                         </div>
-                                        <Button label="Editar" icon="pi pi-check" style={{ marginLeft:'85%', marginTop:'25px' }}   onClick={() => setVisible(false)} autoFocus type="submit" />
+                                        <Button label="Editar" icon="pi pi-check" style={{ marginLeft: '85%', marginTop: '25px' }} onClick={() => setVisible(false)} autoFocus type="submit" />
                                     </form>
                                 </Dialog>
                                 <Dialog header="Associar Parâmetros" visible={visible2} style={{ width: '50vw' }} onHide={() => setVisible2(false)}>
@@ -246,7 +250,7 @@ function VizualizacaoEstacao() {
                                         <MultiSelect value={selectedParametro} onChange={(e) => setSelectedParametro(e.value)} options={parametros} optionLabel="tipo"
                                             filter placeholder="Pârametros Selecionados" maxSelectedLabels={3} className="w-full md:w-100rem" optionValue="id" />
                                     </div>
-                                    <Button label="Adicionar Parametro" style={{ marginLeft:'69%', marginTop:'25px' }} icon="pi pi-check" onClick={() => postParametros()} autoFocus type="submit" />
+                                    <Button label="Adicionar Parametro" style={{ marginLeft: '69%', marginTop: '25px' }} icon="pi pi-check" onClick={() => postParametros()} autoFocus type="submit" />
                                 </Dialog>
                             </div>
 
@@ -263,6 +267,8 @@ function VizualizacaoEstacao() {
                         ) : (
                             <p>Nenhum dado encontrado.</p>
                         )}
+
+
                     </div>
 
 
