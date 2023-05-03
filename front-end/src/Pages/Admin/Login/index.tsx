@@ -24,6 +24,7 @@ function Login() {
     const [value, setValue] = useState<string>();
     const [values, setValues] = useState<string>();
     const navigate = useNavigate();
+    
 
 
     return (
@@ -45,15 +46,15 @@ function Login() {
                                     <label htmlFor="localization">Senha</label>
                                     <InputText type="text" placeholder="" value={values} required />
                                 </div>
-                                <small id="username-help">
+                                {/* <small id="username-help">
                                     Esqueceu sua senha ? =)
-                                </small>
+                                </small> */}
                                 <div className="botao">
                                     <Button label="Login" type="submit" className="p-button-outlined" />
                                 </div>
                                 <div className="linha"></div>
                                 <div className="criar-conta">
-                                    <small>Ainda não possui uma conta ? Criar conta</small>
+                                    <small>Ainda não possui uma conta ? <a href="/cadastro-usuario">Criar conta</a></small>
                                 </div>
                             </div>
                         </div>
