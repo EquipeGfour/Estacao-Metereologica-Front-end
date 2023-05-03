@@ -9,6 +9,7 @@ import Login from "../Pages/Admin/Login";
 import ListagemParametros from "../Pages/Admin/ListagemParametros";
 import ListagemAlertas from "../Pages/Admin/ListagemAlertas";
 import HomeAdmin from "../Pages/Admin/HomeAdmin";
+import ListagemMedidas from "../Pages/Admin/ListagemMedidas";
 
 
 function Routes() {
@@ -26,6 +27,7 @@ function Routes() {
             <Route path="/" element={< HomeAdmin />} />
             <Route path="/listagem-estacao" element={< ListagemEstacao />} />
             <Route path="/listagem-alertas" element={<ListagemAlertas />} />
+            <Route path="/listagem-medidas" element ={<ListagemMedidas/>} />
 
         </RoutesWrapper>
     );
