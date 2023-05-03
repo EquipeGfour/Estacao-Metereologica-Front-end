@@ -10,6 +10,7 @@ import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
 import { Toast } from "primereact/toast";
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 interface Parametro {
     id: number;
@@ -30,6 +31,17 @@ function ListagemParametros() {
         setParametros(data as Parametro);
     }, []);
 
+    const accept = () => {
+        deleteSelectedParametros()
+    }
+    const confirm2 = () => {
+        confirmDialog({
+            message: 'Deseja Confirmar ação?',
+            header: 'Deletar Confirmação',
+            icon: 'pi pi-trash',
+            acceptClassName: 'p-button-danger', accept
+        });
+    };
     const {
         register,
         handleSubmit,
@@ -82,8 +94,9 @@ function ListagemParametros() {
     const leftToolbarTemplate = () => {
         return (
             <div className="flex flex-wrap gap-2">
+                <ConfirmDialog />
                 <Button label="Excluir" icon="pi pi-trash" severity="danger"
-                    onClick={() => deleteSelectedParametros()}
+                    onClick={confirm2}
                     disabled={!selectedParametros || !selectedParametros.length} />
             </div>
         );
@@ -108,6 +121,7 @@ function ListagemParametros() {
         setSelectedParametros(null);
     };
 
+
     return (
         <>
             <S.ListagemParametros>
@@ -125,8 +139,8 @@ function ListagemParametros() {
                             </span>
                         </div>
                         <div className='conteudo'>
+                            <Toolbar  left={leftToolbarTemplate}></Toolbar>
                             <form onSubmit={handleSubmit(onSubmit)}>
-                                <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
                                 <DataTable value={parametros} editMode="row" dataKey="id" onRowEditComplete={onRowEditComplete} tableStyle={{ minWidth: '50rem' }} type='submit' selection={selectedParametros} onSelectionChange={(e) => setSelectedParametros(e.value)}>
                                     <Column selectionMode="multiple" exportable={false}></Column>
                                     <Column field="tipo" header="Tipo" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
