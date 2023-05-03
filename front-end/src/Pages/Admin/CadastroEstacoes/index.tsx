@@ -10,6 +10,8 @@ import { useForm } from "react-hook-form";
 import { Toast } from "primereact/toast";
 import { Dialog } from "primereact/dialog";
 import { MultiSelect } from "primereact/multiselect";
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+
 
 
 
@@ -20,7 +22,7 @@ interface CadastroEstacoes {
     latitude: String,
     longitude: String,
     utc: String,
-    uid:string
+    uid: string
 }
 interface EstacaoDados {
     estacao: {
@@ -54,6 +56,16 @@ function CadastroEstacao() {
     const [values, setValues] = useState<string>();
     const toast = useRef<Toast>(null);
 
+    const [visible, setVisible] = useState<boolean>(false);
+
+    const accept = async () => {
+        setVisible2(true);
+    }
+
+    const reject = () => {
+        toast.current?.show({ severity: 'warn', detail: 'Estação cadastrada sem parametros', life: 3000 });
+    }
+
     const cadastrarEstacao = useCallback((data: CadastroEstacoes) => {
         api.post<CadastroEstacoes>(`/estacao/cadastrar`, {
             nome: data.nome,
@@ -61,7 +73,7 @@ function CadastroEstacao() {
             latitude: data.latitude,
             longitude: data.longitude,
             utc: "2023-03-16T17:30:00.000Z",
-            uid:data.uid
+            uid: data.uid
         }).then(res => {
             setId(res.data.id);
             toast.current?.show({ severity: 'success', summary: 'Successo', detail: 'Estação cadastrada!!', life: 3000 });
@@ -151,10 +163,11 @@ function CadastroEstacao() {
                                     <InputText type="text" placeholder="Longitude" value={valuess}  {...register("longitude")} required />
                                 </div>
                                 <div className="botao">
-                                    <Button label="Cadastrar" type="submit" className="p-button-outlined" />
+                                    <ConfirmDialog visible={visible} onHide={() => setVisible(false)} message="Gostaria de adicionar parametros a esta estação ?"
+                                        header="Adicionar parâmetros" icon="pi pi-sun" accept={accept} reject={reject} />
+                                    <Button label="Cadastrar" type="submit" className="p-button-outlined" onClick={() => setVisible(true)} />
                                 </div>
                             </form>
-                            <Button label="Adicionar Parametros" style={{ marginTop: "10px" }} onClick={() => setVisible2(true)} />
                             <Dialog header="Associar Parâmetros" visible={visible2} style={{ width: '50vw' }} onHide={() => setVisible2(false)}>
                                 <div className="card flex justify-content-center">
                                     <MultiSelect value={selectedParametro} onChange={(e) => setSelectedParametro(e.value)} options={parametros} optionLabel="tipo"
