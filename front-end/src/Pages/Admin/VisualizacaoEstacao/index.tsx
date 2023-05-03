@@ -13,6 +13,7 @@ import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect";
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 interface EstacaoDados {
     estacao: {
@@ -53,6 +54,10 @@ function VizualizacaoEstacao() {
         editarEstacao(data as EstacaoDados);
     }, []);
 
+    const accept = () => {
+        deleteEstacao(String(estacao?.estacao.id))
+    }
+
 
     const {
         register,
@@ -70,7 +75,15 @@ function VizualizacaoEstacao() {
             console.log(error);
         })
     }
-
+    const confirm2 = () => {
+        confirmDialog({
+            message: 'Deseja Confirmar ação?',
+            header: 'Deletar Confirmação',
+            icon: 'pi pi-trash',
+            acceptClassName: 'p-button-danger',
+            accept,
+        });
+    };
     useEffect(() => {
         getEstacao();
     }, [id]);
@@ -146,6 +159,7 @@ function VizualizacaoEstacao() {
         setChartOptions(options);
     }, []);
 
+
     const deleteEstacao = useCallback(async (id: string) => {
         await api
             .delete(`/estacao/excluir/${id}`)
@@ -196,7 +210,7 @@ function VizualizacaoEstacao() {
                 console.log(err);
             });
     }, []);
-        return (
+    return (
         <>
             <Toast ref={toast} />
             <S.View >
@@ -222,7 +236,10 @@ function VizualizacaoEstacao() {
                                 <div className='botaoEditar'>
                                     <Button icon="pi pi-pencil" onClick={() => setVisible(true)} />
                                     <Button icon="pi pi-plus" onClick={() => setVisible2(true)} />
-                                    <Button icon="pi pi-trash" onClick={() => deleteEstacao(String(estacao?.estacao.id))} />
+                                    <ConfirmDialog />
+                                    <div className="card flex flex-wrap gap-2 justify-content-center">
+                                        <Button onClick={confirm2} icon="pi pi-trash" ></Button>
+                                    </div>
                                 </div>
                                 <Dialog header="Editar Estação" visible={visible} style={{ width: '50vw' }} onHide={() => setVisible(false)} >
                                     <form onSubmit={handleSubmit(onSubmit)}>
@@ -238,7 +255,7 @@ function VizualizacaoEstacao() {
                                             <label htmlFor="Latitude">Latitude</label>
                                             <InputText id="Latitude" aria-describedby="Latitude-help" defaultValue={estacao?.estacao.latitude} required {...register("estacao.latitude")} />
                                         </div>
-                                        <Button label="Editar" icon="pi pi-check" style={{ marginLeft:'85%', marginTop:'25px' }}   onClick={() => setVisible(false)} autoFocus type="submit" />
+                                        <Button label="Editar" icon="pi pi-check" style={{ marginLeft: '85%', marginTop: '25px' }} onClick={() => setVisible(false)} autoFocus type="submit" />
                                     </form>
                                 </Dialog>
                                 <Dialog header="Associar Parâmetros" visible={visible2} style={{ width: '50vw' }} onHide={() => setVisible2(false)}>
@@ -246,7 +263,7 @@ function VizualizacaoEstacao() {
                                         <MultiSelect value={selectedParametro} onChange={(e) => setSelectedParametro(e.value)} options={parametros} optionLabel="tipo"
                                             filter placeholder="Pârametros Selecionados" maxSelectedLabels={3} className="w-full md:w-100rem" optionValue="id" />
                                     </div>
-                                    <Button label="Adicionar Parametro" style={{ marginLeft:'69%', marginTop:'25px' }} icon="pi pi-check" onClick={() => postParametros()} autoFocus type="submit" />
+                                    <Button label="Adicionar Parametro" style={{ marginLeft: '69%', marginTop: '25px' }} icon="pi pi-check" onClick={() => postParametros()} autoFocus type="submit" />
                                 </Dialog>
                             </div>
 
