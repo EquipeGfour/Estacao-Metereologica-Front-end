@@ -1,33 +1,29 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 
-interface Estacao {
-    latitude: number;
-    longitude: number;
-}
 
-function Mapa() {
+function Mapa(latitude:any, longitude:any) {
 
-const [position, setPosition] = useState(null);
-const [estacao] = useState<Estacao>();
+    const containerStyle = {
+        width: "400px",
+        height: "400px"
+    };
 
-const containerStyle = {
-    width: "400px",
-    height: "400px"
-};
+    /* const latitude: number = parseFloat(estacao?.latitude);
+    const longitude: number = parseFloat(estacao?.longitude); */
 
-const centro = {
-    lat: estacao?.latitude,
-    lng: estacao?.longitude
-};
+    const centro = {
+        lat: latitude,
+        lng: longitude
+    };
 
-const posicao = {
-    lat: estacao?.latitude,
-    lng: estacao?.longitude
-};
+    const posicao = {
+        lat: latitude,
+        lng: longitude
+    };
 
     return (
-        <LoadScript googleMapsApiKey="AIzaSyBAw7vxa5CMiBHdqXF0FUqx6AStWF0bI6k">
+        <LoadScript googleMapsApiKey="AIzaSyANXJAU1kT5aSuRzVnVri6x1KN7Z5KIlYI">
             <GoogleMap mapContainerStyle={containerStyle} center={centro} zoom={15}>
                 <Marker position={posicao} />
             </GoogleMap>

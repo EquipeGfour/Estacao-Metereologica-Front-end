@@ -13,7 +13,8 @@ import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect";
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
-import MapComponent from "../../../Components/Map";
+import Mapa from "../../../Components/Map";
+import Chart from "../../../Components/Chart";
 
 interface EstacaoDados {
     estacao: {
@@ -197,6 +198,10 @@ function VizualizacaoEstacao() {
                 console.log(err);
             });
     }, []);
+
+    const latitude: number = Number(estacao?.estacao.latitude);
+    const longitude: number = Number(estacao?.estacao.longitude);
+
     return (
         <>
             <Toast ref={toast} />
@@ -212,7 +217,7 @@ function VizualizacaoEstacao() {
                         </div>
                         <div className='container'>
                             <div className="map">
-                                <MapComponent/>
+                                <Mapa latitude={estacao?.estacao.latitude} longitude={estacao?.estacao.longitude}/>
                             </div>
                             <div className='h2'>
                                 <div className='texto'>
@@ -268,7 +273,9 @@ function VizualizacaoEstacao() {
                             <p>Nenhum dado encontrado.</p>
                         )}
 
-
+                        <div className="grafico">
+                            <Chart/>
+                        </div>
                     </div>
 
 
