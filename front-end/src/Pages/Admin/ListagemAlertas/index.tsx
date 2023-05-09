@@ -10,7 +10,7 @@ import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
 import { Toast } from "primereact/toast";
-
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 interface Alerta {
     id: number;
@@ -28,6 +28,17 @@ function ListagemAlertas() {
         setAlertas(data as Alerta);
     }, []);
 
+    const accept = () => {
+        deleteSelectedAlertas()
+    }
+    const confirmaExclusao = () => {
+        confirmDialog({
+            message: 'Deseja Confirmar ação?',
+            header: 'Deletar Confirmação',
+            icon: 'pi pi-trash',
+            acceptClassName: 'p-button-danger', accept
+        });
+    }
     const {
         register,
         handleSubmit,
@@ -78,8 +89,9 @@ function ListagemAlertas() {
     const leftToolbarTemplate = () => {
         return (
             <div className="flex flex-wrap gap-2">
+                <ConfirmDialog />
                 <Button label="Excluir" icon="pi pi-trash" severity="danger"
-                    onClick={() => deleteSelectedAlertas()}
+                    onClick={confirmaExclusao}
                     disabled={!selectedAlertas || !selectedAlertas.length} />
             </div>
         );
@@ -121,8 +133,8 @@ function ListagemAlertas() {
                             </span>
                         </div>
                         <div className='conteudo'>
+                        <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
                             <form onSubmit={handleSubmit(onSubmit)}>
-                                <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
                                 <DataTable value={alertas} editMode="row" dataKey="id" onRowEditComplete={onRowEditComplete} tableStyle={{ minWidth: '50rem' }} type='submit' selection={selectedAlertas} onSelectionChange={(e) => setSelectedAlertas(e.value)}>
                                     <Column selectionMode="multiple" style={{ width: '1%' }} exportable={false}></Column>
                                     <Column field="nome" header="Nome" editor={(options) => textEditor(options)} style={{ width: '25%' }}></Column>
