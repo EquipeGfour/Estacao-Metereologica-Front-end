@@ -16,31 +16,15 @@ interface AlertaDisparado {
     id: number;
     nome: string;
     mensagem: string;
-    idE: string;
+    nomeEstacao: string;
 }
 
 function ListagemAlertasDisparados() {
     const toast = useRef<Toast>(null);
     const [alertasD, setAlertasD] = useState<AlertaDisparado[] | any>([]);
-    const navigate = useNavigate();
-    const { id } = useParams();
-    const [selectedAlertas, setSelectedAlertas] = useState<AlertaDisparado[] | any>([]);
-    
-    const onSubmit: SubmitHandler<FieldValues> = useCallback(async (data) => {
-        setAlertasD(data as AlertaDisparado);
-    }, []);
-
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm({
-        mode: "onBlur",
-    });
-
 
     async function getAllAlertas() {
-        const response = await api.get<AlertaDisparado[]>("/alerta/buscar");
+        const response = await api.get<AlertaDisparado[]>("/registro-alerta/buscar");
         setAlertasD(response.data);
     }
 
@@ -60,13 +44,12 @@ function ListagemAlertasDisparados() {
                     <main>
                         <h1>Alertas Disparados</h1>
                         <div className='conteudo'>
-                            <form onSubmit={handleSubmit(onSubmit)}>
-                                <DataTable value={alertasD} editMode="row" dataKey="id" tableStyle={{ minWidth: '50rem' }} type='submit' selection={selectedAlertas} onSelectionChange={(e) => setSelectedAlertas(e.value)}>
-                                    <Column selectionMode="multiple" style={{ width: '1%' }} exportable={false}></Column>
-                                    <Column field="nome" header="Nome" style={{ width: '25%' }}></Column>
-                                    <Column field="mensagem" header="Mensagem" style={{ width: '30%' }}></Column>
-                                    <Column field="id-estação" header="ID da estação relacionada" style={{ width: '30%' }}></Column>
-                                    <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}></Column>
+                            <form>
+                                <DataTable value={alertasD} dataKey="id" tableStyle={{ minWidth: '50rem' }} type='submit'>
+                                    <Column field="alerta.nome" header="Nome" style={{ width: '18%' }}></Column>
+                                    <Column field="alerta.mensagem" header="Mensagem" style={{ width: '30%' }}></Column>
+                                    <Column field="estacao.nome" header="Nome da estação relacionada" style={{ width: '25%' }}></Column>
+                                    <Column field="unixtime" header="Data de disparo" style={{ width: '25%' }}></Column>
                                 </DataTable>
                             </form>
                         </div>
