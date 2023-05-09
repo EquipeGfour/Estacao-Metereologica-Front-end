@@ -21,8 +21,8 @@ interface EstacaoDados {
         id: number;
         nome: string;
         data_criacao: string;
-        latitude: string;
-        longitude: string;
+        latitude: any;
+        longitude: any;
         utc: string;
     };
     dados: {
@@ -199,8 +199,10 @@ function VizualizacaoEstacao() {
             });
     }, []);
 
-    const latitude: number = Number(estacao?.estacao.latitude);
-    const longitude: number = Number(estacao?.estacao.longitude);
+    const latitudeMap = parseFloat(estacao?.estacao.latitude);
+    const longitudeMap = parseFloat(estacao?.estacao.longitude);
+
+    console.log(latitudeMap, longitudeMap)
 
     return (
         <>
@@ -217,7 +219,7 @@ function VizualizacaoEstacao() {
                         </div>
                         <div className='container'>
                             <div className="map">
-                                <Mapa latitude={estacao?.estacao.latitude} longitude={estacao?.estacao.longitude}/>
+                                <Mapa latitude={latitudeMap} longitude={longitudeMap}/>
                             </div>
                             <div className='h2'>
                                 <div className='texto'>
@@ -274,7 +276,7 @@ function VizualizacaoEstacao() {
                         )}
 
                         <div className="grafico">
-                            <Chart/>
+                            <Chart nome={estacao?.estacao.nome}/>
                         </div>
                     </div>
 
