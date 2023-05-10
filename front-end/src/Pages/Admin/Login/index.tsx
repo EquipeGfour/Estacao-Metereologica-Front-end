@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, SetStateAction, useRef } from "react";
+import React, { useState, useEffect, useCallback, SetStateAction, useRef, useContext } from "react";
 import { InputText } from "primereact/inputtext";
 import * as S from "./styles";
 import { Button } from 'primereact/button';
@@ -7,24 +7,19 @@ import { api } from "../../../service/api";
 import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { Toast } from "primereact/toast";
+import { sign } from "crypto";
+import { SignatureKind } from "typescript";
 
 
-
-interface Login {
-    id: SetStateAction<number | undefined>;
-    nome: String,
-    data_criacao: String,
-    latitude: String,
-    longitude: String,
-    utc: String
+interface UserLogin {
+    email: string;
+    senha: string;
 }
 
 function Login() {
-    const [id, setId] = useState<number>();
-    const [value, setValue] = useState<string>();
-    const [values, setValues] = useState<string>();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const navigate = useNavigate();
-    
 
 
     return (
@@ -40,11 +35,11 @@ function Login() {
                                 <p>Login</p>
                                 <div className="estacaoNome">
                                     <label htmlFor="username">E-mail</label>
-                                    <InputText className="inputNome" type="text" value={value} required />
+                                    <InputText className="inputNome" type="text" value={email} required />
                                 </div>
                                 <div className="localizacao">
                                     <label htmlFor="localization">Senha</label>
-                                    <InputText type="text" placeholder="" value={values} required />
+                                    <InputText type="password" placeholder="" value={password} required />
                                 </div>
                                 {/* <small id="username-help">
                                     Esqueceu sua senha ? =)
