@@ -276,7 +276,7 @@ function VizualizacaoEstacao() {
                         )}
 
                         <div className="grafico">
-                            <Chart nome={estacao?.estacao.nome}/>
+                            <Chart nome={estacao?.estacao.nome} />
                         </div>
                     </div>
 

@@ -1,7 +1,16 @@
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 
-function Chart(nome:any, dados:any) {
+function Chart(nome:any, dados:any, parametroNome:any, params: any ) {
+    var param2: any[] = []
+    params.map((param: any)=>{
+        const parametros = {
+            name: param.parametroNome,
+            data: param.dados.dados
+        }
+        param2.push(parametros)
+    })
+
 
     const options = {
         chart: {
@@ -10,13 +19,7 @@ function Chart(nome:any, dados:any) {
         title: {
             text: nome.nome
         },
-        series: [{
-            name: 'Graus',
-            data: dados.dados
-        },{
-            name: 'vento',
-            data: dados.dados
-        }]
+        series: [param2]
     }
 
     return(
