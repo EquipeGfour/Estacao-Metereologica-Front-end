@@ -19,7 +19,7 @@ function NavbarAdmin() {
         },
         {
             label: 'Cadastrar',
-            icon: 'pi pi-fw pi-list',
+            icon: 'pi pi-align-justify',
             items: [
                 {
                     label: 'Estação',
@@ -43,13 +43,46 @@ function NavbarAdmin() {
                     },
                 },
             ]
+        }, 
+        {
+            label: 'Listagem',
+            icon: 'pi pi-align-justify',
+            items: [
+                {
+                    label: 'Estação',
+                    icon: 'pi pi-fw pi-list',
+                    command: (event) => {
+                        navigate("/listagem-estacao");
+                    },
+                },
+                {
+                    label: 'Parâmetro',
+                    icon: 'pi pi-fw pi-list',
+                    command: (event) => {
+                        navigate("/listagem-parametros");
+                    },
+                },
+                {
+                    label: 'Alerta',
+                    icon: 'pi pi-fw pi-list',
+                    command: (event) => {
+                        navigate("/listagem-alertas");
+                    },
+                },
+                {
+                    label: 'Medida',
+                    icon: 'pi pi-fw pi-list',
+                    command: (event) => {
+                        navigate("/listagem-medidas");
+                    },
+                },
+            ]
         }
     ]
-    const end = <Button icon={'pi pi-fw pi-sign-out'} />
     return (
         <>
             <S.NavBarAdmin>
-                <Menubar model={items} start={start} end={end} />
+                <Menubar model={items} start={start} />
             </S.NavBarAdmin>
         </>
     )

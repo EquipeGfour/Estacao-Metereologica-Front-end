@@ -15,6 +15,7 @@ import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
 import Mapa from "../../../Components/Map";
 import Chart from "../../../Components/Chart";
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 interface EstacaoDados {
     estacao: {
@@ -55,6 +56,10 @@ function VizualizacaoEstacao() {
         editarEstacao(data as EstacaoDados);
     }, []);
 
+    const accept = () => {
+        deleteEstacao(String(estacao?.estacao.id))
+    }
+
 
     const {
         register,
@@ -72,7 +77,15 @@ function VizualizacaoEstacao() {
             console.log(error);
         })
     }
-
+    const confirm2 = () => {
+        confirmDialog({
+            message: 'Deseja Confirmar ação?',
+            header: 'Deletar Confirmação',
+            icon: 'pi pi-trash',
+            acceptClassName: 'p-button-danger',
+            accept,
+        });
+    };
     useEffect(() => {
         getEstacao();
     }, [id]);
@@ -147,6 +160,7 @@ function VizualizacaoEstacao() {
         setChartData(data);
         setChartOptions(options);
     }, []);
+
 
     const deleteEstacao = useCallback(async (id: string) => {
         await api
@@ -232,7 +246,10 @@ function VizualizacaoEstacao() {
                                 <div className='botaoEditar'>
                                     <Button icon="pi pi-pencil" onClick={() => setVisible(true)} />
                                     <Button icon="pi pi-plus" onClick={() => setVisible2(true)} />
-                                    <Button icon="pi pi-trash" onClick={() => deleteEstacao(String(estacao?.estacao.id))} />
+                                    <ConfirmDialog />
+                                    <div className="card flex flex-wrap gap-2 justify-content-center">
+                                        <Button onClick={confirm2} icon="pi pi-trash" ></Button>
+                                    </div>
                                 </div>
                                 <Dialog header="Editar Estação" visible={visible} style={{ width: '50vw' }} onHide={() => setVisible(false)} >
                                     <form onSubmit={handleSubmit(onSubmit)}>
