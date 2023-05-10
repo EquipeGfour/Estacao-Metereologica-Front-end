@@ -1,29 +1,35 @@
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
+import { useEffect, useState } from 'react'
 
-function Chart(nome:any, dados:any, parametroNome:any, params: any ) {
-    var param2: any[] = []
-    params.map((param: any)=>{
-        const parametros = {
-            name: param.parametroNome,
-            data: param.dados.dados
-        }
-        param2.push(parametros)
-    })
-
+function Chart(props: any) {
+    const [param2, setParam2] = useState<any[]>([])
+    useEffect(() => {
+        props.params?.map((param: any) => {
+            var temp: any[] = []
+            const parametro = {
+                name: param.name,
+                data: param.data
+            }
+            temp.push(parametro)
+            setParam2(temp)
+        })
+        console.log(param2)
+    }
+    )
 
     const options = {
         chart: {
             type: 'line'
         },
         title: {
-            text: nome.nome
+            text: props.nome
         },
-        series: [param2]
+        series: param2
     }
 
-    return(
-        <HighchartsReact highcharts={Highcharts} options={options}/>
+    return (
+        <HighchartsReact highcharts={Highcharts} options={options} />
     )
 }
 

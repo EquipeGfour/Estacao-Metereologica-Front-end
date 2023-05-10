@@ -213,6 +213,21 @@ function VizualizacaoEstacao() {
             });
     }, []);
 
+    const deleteRelacaoParametro = useCallback(async (id: string) => {
+        await api
+            .delete(`/estacao/excluir/${id}`)
+            .then(function (response) {
+                if (response) {
+                    navigate(`/listagem-estacao`);
+                }
+                toast.current?.show({ severity: 'success', summary: 'Sucesso', detail: 'Estação Deletada.', life: 3000 });
+            })
+            .catch((err) => {
+                console.log(err);
+                toast.current?.show({ severity: 'error', summary: 'error', detail: 'Algo deu errado...', life: 3000 });
+            });
+    }, []);
+
     const latitudeMap = parseFloat(estacao?.estacao.latitude);
     const longitudeMap = parseFloat(estacao?.estacao.longitude);
 
@@ -244,12 +259,10 @@ function VizualizacaoEstacao() {
 
                             <div className="card flex justify-content-center">
                                 <div className='botaoEditar'>
-                                    <Button icon="pi pi-pencil" onClick={() => setVisible(true)} />
-                                    <Button icon="pi pi-plus" onClick={() => setVisible2(true)} />
+                                    <Button icon="pi pi-pencil" onClick={() => setVisible(true)} label="Editar Estação"/>
+                                    <Button icon="pi pi-plus" onClick={() => setVisible2(true)} label="Adicionar Parâmetros"/>
+                                    <Button onClick={confirm2} icon="pi pi-trash" label="Excluir Estação"/>
                                     <ConfirmDialog />
-                                    <div className="card flex flex-wrap gap-2 justify-content-center">
-                                        <Button onClick={confirm2} icon="pi pi-trash" ></Button>
-                                    </div>
                                 </div>
                                 <Dialog header="Editar Estação" visible={visible} style={{ width: '50vw' }} onHide={() => setVisible(false)} >
                                     <form onSubmit={handleSubmit(onSubmit)}>
@@ -292,10 +305,9 @@ function VizualizacaoEstacao() {
                         )}
 
                         <div className="grafico">
+                            <Chart nome={estacao?.estacao.nome} params={[{name: 'Vendas', data: [100, 150, 200, 300, 250, 400]}, {name: 'Batata', data: [100, 20, 30, 140]}]}/>
                         </div>
                     </div>
-
-
                 </div>
             </S.View>
         </>
