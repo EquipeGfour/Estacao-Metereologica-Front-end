@@ -76,6 +76,13 @@ function NavbarAdmin() {
                         navigate("/listagem-medidas");
                     },
                 },
+                {
+                    label: 'Alertas Disparados',
+                    icon: 'pi pi-fw pi-list',
+                    command: (event) => {
+                        navigate("/listagem-alertas-disparados");
+                    },
+                },
             ]
         }
     ]
