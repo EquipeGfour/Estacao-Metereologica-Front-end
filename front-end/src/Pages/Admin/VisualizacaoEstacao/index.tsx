@@ -219,7 +219,6 @@ function VizualizacaoEstacao() {
                         </div>
                         <div className='container'>
                             <div className="map">
-                                <Mapa latitude={latitudeMap} longitude={longitudeMap}/>
                             </div>
                             <div className='h2'>
                                 <div className='texto'>
@@ -276,7 +275,6 @@ function VizualizacaoEstacao() {
                         )}
 
                         <div className="grafico">
-                            <Chart nome={estacao?.estacao.nome} />
                         </div>
                     </div>
 
