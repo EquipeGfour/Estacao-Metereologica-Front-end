@@ -37,20 +37,30 @@ interface EstacaoDados {
         };
     }[];
 }
+interface Alerta {
+    id: number;
+    nome: string;
+    mensagem: string;
+    condicao: string;
+}
+
 
 function VizualizacaoEstacao() {
 
     const [visible, setVisible] = useState<boolean>(false);
     const [visible2, setVisible2] = useState<boolean>(false);
+    const [visible3, setVisible3] = useState<boolean>(false);
     const [estacao, setEstacao] = useState<EstacaoDados>();
+    const [estacao2, setEstacao2] = useState<EstacaoDados>();
     const [parametros, setParametros] = useState<EstacaoDados[]>([])
+    const [parametros2, setParametros2] = useState<EstacaoDados[]>([])
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
     const [selectedParametro, setSelectedParametro] = useState<EstacaoDados | null>(null);
+    const [selectedParametro2, setSelectedParametro2] = useState<EstacaoDados | null>(null);
     const { id } = useParams();
     const navigate = useNavigate();
     const toast = useRef<Toast>(null);
-
 
     const onSubmit: SubmitHandler<FieldValues> = useCallback(async (data) => {
         editarEstacao(data as EstacaoDados);
@@ -94,10 +104,12 @@ function VizualizacaoEstacao() {
     const getAllParametros = async () => {
         const response = await api.get<EstacaoDados[]>(`/parametro/buscar-parametro`);
         setParametros(response.data);
+        setParametros2(response.data);
     }
 
     useEffect(() => {
         getAllParametros();
+        
     }, [])
 
     useEffect(() => {
@@ -246,6 +258,7 @@ function VizualizacaoEstacao() {
                                 <div className='botaoEditar'>
                                     <Button icon="pi pi-pencil" onClick={() => setVisible(true)} />
                                     <Button icon="pi pi-plus" onClick={() => setVisible2(true)} />
+                                    <Button icon="pi pi-exclamation-triangle" onClick={() => setVisible3(true)} />
                                     <ConfirmDialog />
                                     <div className="card flex flex-wrap gap-2 justify-content-center">
                                         <Button onClick={confirm2} icon="pi pi-trash" ></Button>
@@ -275,8 +288,26 @@ function VizualizacaoEstacao() {
                                     </div>
                                     <Button label="Adicionar Parametro" style={{ marginLeft: '69%', marginTop: '25px' }} icon="pi pi-check" onClick={() => postParametros()} autoFocus type="submit" />
                                 </Dialog>
+                                {/* alerta */}
+                                <Dialog header="Adicionar Alerta" visible={visible3} style={{ width: '50vw' }} onHide={() => setVisible3(false)}>
+                                    <br />
+                                    <div className="card flex justify-content-center">
+                                        <InputNumber value={estacao?.estacao.id}  
+                                            placeholder="ID da Estação" disabled  className="w-full md:w-100rem" />
+                                    </div>
+                                    <br />
+                                    <div className="card flex justify-content-center">
+                                        <MultiSelect value={selectedParametro2} onChange={(e) => setSelectedParametro2(e.value)} options={parametros2} optionLabel="tipo"
+                                            filter placeholder="ID do Parametro" maxSelectedLabels={1} className="w-full md:w-100rem" optionValue="id" />
+                                    </div>
+                                    <br />
+                                    <div className="card flex justify-content-center">
+                                        <MultiSelect value={selectedParametro} onChange={(e) => setSelectedParametro(e.value)} options={parametros} optionLabel="tipo"
+                                            filter placeholder="ID do Alerta" maxSelectedLabels={1} className="w-full md:w-100rem" optionValue="id" />
+                                    </div>
+                                    <Button label="Adicionar Parametro" style={{ marginLeft: '69%', marginTop: '25px' }} icon="pi pi-check" onClick={() => postParametros()} autoFocus type="submit" />
+                                </Dialog>
                             </div>
-
                         </div>
                         <p><strong>Parâmetros:</strong></p>
                         {estacao?.dados ? (
@@ -290,6 +321,18 @@ function VizualizacaoEstacao() {
                         ) : (
                             <p>Nenhum dado encontrado.</p>
                         )}
+                        {/* <p><strong>Parâmetros:</strong></p>
+                        {estacao?.dados ? (
+                            <div>
+                                {estacao.dados.map((item) => (
+                                    <li style={{ listStyle: 'none' }} key={item.id}>
+                                        <p>- {item.parametro.tipo}</p>
+                                    </li>
+                                ))}
+                            </div>
+                        ) : (
+                            <p>Nenhum dado encontrado.</p>
+                        )} */}
 
                         <div className="grafico">
                         </div>
