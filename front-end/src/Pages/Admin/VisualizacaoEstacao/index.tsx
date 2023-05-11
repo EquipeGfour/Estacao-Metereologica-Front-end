@@ -42,7 +42,7 @@ interface EstacaoDados {
         mensagem: string;
         tipo:string;
         valor:string
-    };
+    }[];
 
 }
 
@@ -104,10 +104,6 @@ function VizualizacaoEstacao() {
             console.log(error);
         })
     }
-
-
-    
-
     const confirm2 = () => {
         confirmDialog({
             message: 'Deseja Confirmar ação?',
@@ -131,7 +127,7 @@ function VizualizacaoEstacao() {
     useEffect(() => {
         getAllParametros();
         getAllAlertas();
-        getAlertaId
+        getAlertaId();
     }, [])
 
     useEffect(() => {
