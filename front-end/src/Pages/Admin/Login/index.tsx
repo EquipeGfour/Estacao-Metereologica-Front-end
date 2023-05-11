@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { Toast } from "primereact/toast";
 import { sign } from "crypto";
 import { SignatureKind } from "typescript";
+import { useCookies } from "react-cookie";
 
 
 interface UserLogin {
@@ -20,7 +21,23 @@ function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const [cookie, setCookies] = useCookies();
 
+    const login = async (event: any) => {
+        await axios.post("http://localhost:5000/login/", {
+            email: email,
+            senha: password,
+        }).then((res) => {
+            console.log(res)
+            setEmail("")
+            setPassword("")
+            event.preventDefault();
+            /*         navigate('/Home')
+        */    }).catch((erro) => {
+                event.preventDefault();
+                console.error('Erro', erro.response)
+            })
+    }
 
     return (
 
@@ -35,17 +52,17 @@ function Login() {
                                 <p>Login</p>
                                 <div className="estacaoNome">
                                     <label htmlFor="username">E-mail</label>
-                                    <InputText className="inputNome" type="text" value={email} required />
+                                    <InputText className="inputNome" type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
                                 </div>
                                 <div className="localizacao">
                                     <label htmlFor="localization">Senha</label>
-                                    <InputText type="password" placeholder="" value={password} required />
+                                    <InputText type="password" placeholder="" value={password} onChange={(e) => setPassword(e.target.value)} required />
                                 </div>
                                 {/* <small id="username-help">
                                     Esqueceu sua senha ? =)
                                 </small> */}
                                 <div className="botao">
-                                    <Button label="Login" type="submit" className="p-button-outlined" />
+                                    <Button label="Login" type="submit" onClick={login} className="p-button-outlined" />
                                 </div>
                                 <div className="linha"></div>
                                 <div className="criar-conta">
