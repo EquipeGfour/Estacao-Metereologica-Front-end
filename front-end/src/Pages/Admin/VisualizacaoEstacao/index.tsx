@@ -36,12 +36,14 @@ interface EstacaoDados {
             offset: string;
         };
     }[];
-}
-interface Alerta {
-    id: number;
-    nome: string;
-    mensagem: string;
-    condicao: string;
+    Alerta: {
+        id: number;
+        nome: string;
+        mensagem: string;
+        tipo:string;
+        valor:string
+    };
+
 }
 
 
@@ -51,13 +53,14 @@ function VizualizacaoEstacao() {
     const [visible2, setVisible2] = useState<boolean>(false);
     const [visible3, setVisible3] = useState<boolean>(false);
     const [estacao, setEstacao] = useState<EstacaoDados>();
-    const [estacao2, setEstacao2] = useState<EstacaoDados>();
+    const [alertas, setAlertas] = useState<EstacaoDados[]>([])
     const [parametros, setParametros] = useState<EstacaoDados[]>([])
     const [parametros2, setParametros2] = useState<EstacaoDados[]>([])
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
     const [selectedParametro, setSelectedParametro] = useState<EstacaoDados | null>(null);
     const [selectedParametro2, setSelectedParametro2] = useState<EstacaoDados | null>(null);
+    const [selectedAlertas, setSelectedAlertas] = useState<EstacaoDados[] | any>([]);
     const { id } = useParams();
     const navigate = useNavigate();
     const toast = useRef<Toast>(null);
@@ -78,7 +81,13 @@ function VizualizacaoEstacao() {
     } = useForm({
         mode: "onBlur",
     });
-
+    const getAllAlertas = async () => {
+        await api.get<EstacaoDados[]>(`/alerta/buscar`).then((res) => {
+            setAlertas(res.data);
+        }).catch((error) => {
+            console.log(error);
+        })
+    }
 
     const getEstacao = async () => {
         await api.get(`/ehp/parametrosEstacao/${id}`).then((res) => {
@@ -87,6 +96,18 @@ function VizualizacaoEstacao() {
             console.log(error);
         })
     }
+    const getAlertaId = async () => {
+        await api.get(`/alerta/buscar/${id}`).then((res) => {
+            setAlertas(res.data)
+            console.log(res.data); 
+        }).catch((error) => {
+            console.log(error);
+        })
+    }
+
+
+    
+
     const confirm2 = () => {
         confirmDialog({
             message: 'Deseja Confirmar ação?',
@@ -109,7 +130,8 @@ function VizualizacaoEstacao() {
 
     useEffect(() => {
         getAllParametros();
-        
+        getAllAlertas();
+        getAlertaId
     }, [])
 
     useEffect(() => {
@@ -207,6 +229,27 @@ function VizualizacaoEstacao() {
             })
     };
 
+    const VincularAlerta = async () => {
+        const data = {
+            id_estacao: estacao?.estacao.id,
+            id_parametros: selectedParametro2,
+            id_alerta: selectedAlertas
+        }
+        await api.put(`/alerta/vincular`, data)
+            .then((res) => {
+                console.log(res)
+                toast.current?.show({ severity: 'success', summary: 'Sucesso', detail: 'Parametros Registrados', life: 3000 });
+                getEstacao();
+                setVisible3(false);
+            })
+            .catch(error => {
+                toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Algo deu errado...', life: 3000 });
+                console.log(error);
+            })
+    };
+    
+
+
 
     const editarEstacao = useCallback(async (data: EstacaoDados) => {
         await api
@@ -292,8 +335,8 @@ function VizualizacaoEstacao() {
                                 <Dialog header="Adicionar Alerta" visible={visible3} style={{ width: '50vw' }} onHide={() => setVisible3(false)}>
                                     <br />
                                     <div className="card flex justify-content-center">
-                                        <InputNumber value={estacao?.estacao.id}  
-                                            placeholder="ID da Estação" disabled  className="w-full md:w-100rem" />
+                                        <InputNumber value={estacao?.estacao.id}
+                                            placeholder="ID da Estação" disabled className="w-full md:w-100rem" />
                                     </div>
                                     <br />
                                     <div className="card flex justify-content-center">
@@ -302,10 +345,10 @@ function VizualizacaoEstacao() {
                                     </div>
                                     <br />
                                     <div className="card flex justify-content-center">
-                                        <MultiSelect value={selectedParametro} onChange={(e) => setSelectedParametro(e.value)} options={parametros} optionLabel="tipo"
+                                        <MultiSelect value={selectedAlertas} onChange={(e) => setSelectedAlertas(e.value)} options={alertas} optionLabel="nome"
                                             filter placeholder="ID do Alerta" maxSelectedLabels={1} className="w-full md:w-100rem" optionValue="id" />
                                     </div>
-                                    <Button label="Adicionar Parametro" style={{ marginLeft: '69%', marginTop: '25px' }} icon="pi pi-check" onClick={() => postParametros()} autoFocus type="submit" />
+                                    <Button label="Vincular Alerta" style={{ marginLeft: '69%', marginTop: '25px' }} icon="pi pi-check" onClick={() => VincularAlerta()} autoFocus type="submit" />
                                 </Dialog>
                             </div>
                         </div>
@@ -321,18 +364,8 @@ function VizualizacaoEstacao() {
                         ) : (
                             <p>Nenhum dado encontrado.</p>
                         )}
-                        {/* <p><strong>Parâmetros:</strong></p>
-                        {estacao?.dados ? (
-                            <div>
-                                {estacao.dados.map((item) => (
-                                    <li style={{ listStyle: 'none' }} key={item.id}>
-                                        <p>- {item.parametro.tipo}</p>
-                                    </li>
-                                ))}
-                            </div>
-                        ) : (
-                            <p>Nenhum dado encontrado.</p>
-                        )} */}
+
+
 
                         <div className="grafico">
                         </div>

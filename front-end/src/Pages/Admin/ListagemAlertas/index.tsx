@@ -16,7 +16,8 @@ interface Alerta {
     id: number;
     nome: string;
     mensagem: string;
-    condicao: string;
+    tipo:string;
+    valor:string
 }
 function ListagemAlertas() {
     const toast = useRef<Toast>(null);
@@ -68,7 +69,8 @@ function ListagemAlertas() {
             .put(`/alerta/editar/${newData.id}`, {
                 nome: newData.nome,
                 mensagem: newData.mensagem,
-                condicao: newData.condicao
+                tipo:newData.tipo,
+                valor:newData.valor
             })
             .then(function (response) {
                 if (response) {
@@ -139,7 +141,8 @@ function ListagemAlertas() {
                                     <Column selectionMode="multiple" style={{ width: '1%' }} exportable={false}></Column>
                                     <Column field="nome" header="Nome" editor={(options) => textEditor(options)} style={{ width: '25%' }}></Column>
                                     <Column field="mensagem" header="Mensagem" editor={(options) => textEditor(options)} style={{ width: '30%' }}></Column>
-                                    <Column field="condicao" header="Condição" editor={(options) => textEditor(options)} style={{ width: '30%' }}></Column>
+                                    <Column field="tipo" header="Tipo" editor={(options) => textEditor(options)} style={{ width: '30%' }}></Column>
+                                    <Column field="valor" header="valor" editor={(options) => textEditor(options)} style={{ width: '30%' }}></Column>
                                     <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}></Column>
                                 </DataTable>
                             </form>
