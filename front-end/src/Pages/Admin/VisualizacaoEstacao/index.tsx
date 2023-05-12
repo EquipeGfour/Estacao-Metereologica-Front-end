@@ -20,8 +20,8 @@ interface EstacaoDados {
         id: number;
         nome: string;
         data_criacao: string;
-        latitude: number;
-        longitude: number;
+        latitude: string;
+        longitude: string;
         utc: string;
     };
     dados: {
@@ -58,15 +58,19 @@ interface EstacaoDados {
     }
 }
 
+interface Medida {
+    name: string,
+    data: number[]
+}
+
+
 function VizualizacaoEstacao() {
 
     const [visible, setVisible] = useState<boolean>(false);
     const [visible2, setVisible2] = useState<boolean>(false);
     const [estacao, setEstacao] = useState<EstacaoDados>();
     const [parametros, setParametros] = useState<EstacaoDados[]>([])
-    const [medidas, setMedidas] = useState<EstacaoDados[]>([])
-    const [chartData, setChartData] = useState({});
-    const [chartOptions, setChartOptions] = useState({});
+    const [medidas, setMedidas] = useState<Medida[]>([])
     const [selectedParametro, setSelectedParametro] = useState<EstacaoDados | null>(null);
     const { id } = useParams();
     const navigate = useNavigate();
@@ -117,6 +121,7 @@ function VizualizacaoEstacao() {
 
     useEffect(() => {
         getEstacao();
+        getAllEstacaoMedidas();
     }, [id]);
 
 
@@ -124,79 +129,16 @@ function VizualizacaoEstacao() {
         const response = await api.get<EstacaoDados[]>(`/parametro/buscar-parametro`);
         setParametros(response.data);
     }
-    
-    const getAllMedidas = async () => {
-        const response = await api.get<EstacaoDados[]>(`/medida/buscar`);
-        setMedidas(response.data);
+
+    const getAllEstacaoMedidas = async () => {
+        const response = await api.get<Medida[]>(`/medida/buscar-estacaoMedida/${id}`)
+        console.log(response.data)
+        setMedidas(response.data)
     }
 
     useEffect(() => {
         getAllParametros();
-        getAllMedidas();
     }, [])
-
-
-    useEffect(() => {
-        const documentStyle = getComputedStyle(document.documentElement);
-        const textColor = documentStyle.getPropertyValue('--text-color');
-        const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
-        const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
-        const data = {
-            labels: [],
-            datasets: [
-                {
-                    label: [] ,
-                    backgroundColor: documentStyle.getPropertyValue('--blue-500'),
-                    borderColor: documentStyle.getPropertyValue('--blue-500'),
-                    data: [65, 59, 80, 81, 56, 55, 40]
-                },
-                {
-                    label: 'Segunda Semana',
-                    backgroundColor: documentStyle.getPropertyValue('--pink-500'),
-                    borderColor: documentStyle.getPropertyValue('--pink-500'),
-                    data: [28, 48, 40, 19, 86, 27, 90]
-                }
-            ]
-        };
-        const options = {
-            maintainAspectRatio: false,
-            aspectRatio: 0.8,
-            plugins: {
-                legend: {
-                    labels: {
-                        fontColor: textColor
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        color: textColorSecondary,
-                        font: {
-                            weight: 500
-                        }
-                    },
-                    grid: {
-                        display: false,
-                        drawBorder: false
-                    }
-                },
-                y: {
-                    ticks: {
-                        color: textColorSecondary
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false
-                    }
-                }
-            }
-        };
-
-        setChartData(data);
-        setChartOptions(options);
-    }, []);
-
 
     const deleteEstacao = useCallback(async (id: string) => {
         await api
@@ -278,22 +220,17 @@ function VizualizacaoEstacao() {
                             <h1>{estacao?.estacao.nome}</h1>
                         </div>
                         <div className='container'>
-                           {/* <div className="map">
-                                 <Mapa latitude={estacao?.estacao.latitude} longitude={estacao?.estacao.longitude}/>  
-                            </div>*/}
-                            <div className='h2'>
-                                <div className='texto'>
+                            <div className="map">
+                                 <Mapa latitude={parseFloat(estacao?.estacao.latitude || "0")} longitude={parseFloat(estacao?.estacao.longitude || "0")}/>  
+                            </div>
+                            <div className="card flex justify-content-center">
+                                <div className='botaoEditar'>
+                                    <Button icon="pi pi-pencil" onClick={() => setVisible(true)} label="Editar Estação" />
+                                    <Button icon="pi pi-plus" onClick={() => setVisible2(true)} label="Adicionar Parâmetros" />
+                                    <Button onClick={confirm2} icon="pi pi-trash" label="Excluir Estação" />
                                     <h2>Localização:</h2>
                                     <h3>Latitude: {estacao?.estacao.latitude}</h3>
                                     <h3>Longitude: {estacao?.estacao.longitude}</h3>
-                                </div>
-                            </div>
-
-                            <div className="card flex justify-content-center">
-                                <div className='botaoEditar'>
-                                    <Button icon="pi pi-pencil" onClick={() => setVisible(true)} label="Editar Estação"/>
-                                    <Button icon="pi pi-plus" onClick={() => setVisible2(true)} label="Adicionar Parâmetros"/>
-                                    <Button onClick={confirm2} icon="pi pi-trash" label="Excluir Estação"/>
                                     <ConfirmDialog />
                                 </div>
                                 <Dialog header="Editar Estação" visible={visible} style={{ width: '50vw' }} onHide={() => setVisible(false)} >
@@ -330,17 +267,16 @@ function VizualizacaoEstacao() {
                                     <li style={{ listStyle: 'none' }} key={item.id}>
                                         <div className="parametrosview">
                                             <p>- {item.parametro.tipo}</p>
-                                            <Button onClick={() => confirm3(item.id)} icon="pi pi-trash" rounded outlined severity="danger" aria-label="Excluir" />
-                                        </div> 
+                                            <Button onClick={() => confirm3(item.id)} icon="pi pi-trash" rounded text severity="danger" aria-label="Excluir" />
+                                        </div>
                                     </li>
                                 ))}
                             </div>
                         ) : (
                             <p>Nenhum dado encontrado.</p>
                         )}
-
                         <div className="grafico">
-                            {/* <Chart />  */}
+                            <Chart props={{nome: estacao?.estacao.nome, series: medidas}} />
                         </div>
                     </div>
                 </div>
