@@ -24,6 +24,7 @@ function Login() {
     const [cookie, setCookies] = useCookies();
 
     const login = async (event: any) => {
+        event.preventDefault();
         await axios.post("http://localhost:5000/login/", {
             email: email,
             senha: password,
@@ -31,12 +32,11 @@ function Login() {
             console.log(res)
             setEmail("")
             setPassword("")
+            navigate("/")
+        }).catch((erro) => {
             event.preventDefault();
-            /*         navigate('/Home')
-        */    }).catch((erro) => {
-                event.preventDefault();
-                console.error('Erro', erro.response)
-            })
+            console.error('Erro', erro.response)
+        })
     }
 
     return (
