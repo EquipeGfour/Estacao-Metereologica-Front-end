@@ -12,6 +12,7 @@ import { SignatureKind } from "typescript";
 import { useCookies } from "react-cookie";
 
 
+
 interface UserLogin {
     email: string;
     senha: string;
@@ -21,6 +22,7 @@ function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const toast = useRef<Toast>(null);
     const [cookie, setCookies] = useCookies();
 
     const login = async (event: any) => {
@@ -33,9 +35,11 @@ function Login() {
             setEmail("")
             setPassword("")
             navigate("/")
-        }).catch((erro) => {
+        }
+        ).catch((erro) => {
             event.preventDefault();
             console.error('Erro', erro.response)
+            toast.current?.show({ severity: 'error', summary: 'Erro ao fazer login', detail: 'Email ou senha inválidos' });
         })
     }
 
@@ -47,6 +51,7 @@ function Login() {
                 </header>
                 <main>
                     <form>
+                        <Toast ref={toast} />
                         <div className="card">
                             <div className="campos">
                                 <p>Login</p>
