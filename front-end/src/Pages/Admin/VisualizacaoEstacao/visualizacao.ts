@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 export const View = styled.div`
 
 .formato{
-    width: 60%;
+    width: 90%;
     margin: 0 auto;
 }
 .view{
@@ -86,8 +86,16 @@ font-size: 35px;
     flex-direction: column;
     gap: 5px;
 }
-
-
-
+.parametrosview{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 20px;
+    border-bottom: 3px solid #b6b6b6;
+    border-right: 3px solid #b6b6b6;
+    background-color: #e8e8e8;
+    border-radius: 15px;
+    padding: 5px;
+}
 
 `

@@ -10,20 +10,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import { registerables } from "chart.js";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect";
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
 import Mapa from "../../../Components/Map";
-import Chart from "../../../Components/Chart";
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import Chart from "../../../Components/Chart";
 
 interface EstacaoDados {
     estacao: {
         id: number;
         nome: string;
         data_criacao: string;
-        latitude: any;
-        longitude: any;
+        latitude: number;
+        longitude: number;
         utc: string;
     };
     dados: {
@@ -36,6 +34,28 @@ interface EstacaoDados {
             offset: string;
         };
     }[];
+    ehp: {
+        id: number;
+        id_estacao: number;
+        id_parametro: number;
+        id_alerta: number;
+    };
+    medida: {
+        id: number;
+        unixtime: Date;
+        valor_medido: number;
+        id_estacao_has_parametro: number;
+        id_estacao: number;
+        id_parametro: number;
+        id_alerta: number;
+        parametro: {
+            id: number;
+            tipo: string;
+            unidade_medida: string;
+            fator_conversao: string;
+            offset: string;
+        };
+    }
 }
 
 function VizualizacaoEstacao() {
@@ -44,6 +64,7 @@ function VizualizacaoEstacao() {
     const [visible2, setVisible2] = useState<boolean>(false);
     const [estacao, setEstacao] = useState<EstacaoDados>();
     const [parametros, setParametros] = useState<EstacaoDados[]>([])
+    const [medidas, setMedidas] = useState<EstacaoDados[]>([])
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
     const [selectedParametro, setSelectedParametro] = useState<EstacaoDados | null>(null);
@@ -51,15 +72,9 @@ function VizualizacaoEstacao() {
     const navigate = useNavigate();
     const toast = useRef<Toast>(null);
 
-
     const onSubmit: SubmitHandler<FieldValues> = useCallback(async (data) => {
         editarEstacao(data as EstacaoDados);
     }, []);
-
-    const accept = () => {
-        deleteEstacao(String(estacao?.estacao.id))
-    }
-
 
     const {
         register,
@@ -68,7 +83,6 @@ function VizualizacaoEstacao() {
     } = useForm({
         mode: "onBlur",
     });
-
 
     const getEstacao = async () => {
         await api.get(`/ehp/parametrosEstacao/${id}`).then((res) => {
@@ -79,13 +93,28 @@ function VizualizacaoEstacao() {
     }
     const confirm2 = () => {
         confirmDialog({
-            message: 'Deseja Confirmar ação?',
-            header: 'Deletar Confirmação',
+            message: `Tem certeza que deseja excluir o a estação ${estacao?.estacao.nome}?`,
+            header: 'Excluir estação',
             icon: 'pi pi-trash',
             acceptClassName: 'p-button-danger',
-            accept,
+            accept() {
+                deleteEstacao(String(estacao?.estacao.id))
+            },
         });
     };
+
+    const confirm3 = (id: number) => {
+        confirmDialog({
+            message: `Tem certeza que deseja excluir o parâmetro da estação ${estacao?.estacao.nome}?`,
+            header: 'Excluir estação',
+            icon: 'pi pi-trash',
+            acceptClassName: 'p-button-danger',
+            accept() {
+                deleteRelacaoParametro(String(id))
+            },
+        });
+    };
+
     useEffect(() => {
         getEstacao();
     }, [id]);
@@ -95,10 +124,17 @@ function VizualizacaoEstacao() {
         const response = await api.get<EstacaoDados[]>(`/parametro/buscar-parametro`);
         setParametros(response.data);
     }
+    
+    const getAllMedidas = async () => {
+        const response = await api.get<EstacaoDados[]>(`/medida/buscar`);
+        setMedidas(response.data);
+    }
 
     useEffect(() => {
         getAllParametros();
+        getAllMedidas();
     }, [])
+
 
     useEffect(() => {
         const documentStyle = getComputedStyle(document.documentElement);
@@ -106,10 +142,10 @@ function VizualizacaoEstacao() {
         const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
         const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
         const data = {
-            labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho'],
+            labels: [],
             datasets: [
                 {
-                    label: 'Primeira Semana',
+                    label: [] ,
                     backgroundColor: documentStyle.getPropertyValue('--blue-500'),
                     borderColor: documentStyle.getPropertyValue('--blue-500'),
                     data: [65, 59, 80, 81, 56, 55, 40]
@@ -215,10 +251,10 @@ function VizualizacaoEstacao() {
 
     const deleteRelacaoParametro = useCallback(async (id: string) => {
         await api
-            .delete(`/estacao/excluir/${id}`)
+            .delete(`/ehp/excluir/${id}`)
             .then(function (response) {
                 if (response) {
-                    navigate(`/listagem-estacao`);
+                    navigate(0);
                 }
                 toast.current?.show({ severity: 'success', summary: 'Sucesso', detail: 'Estação Deletada.', life: 3000 });
             })
@@ -227,11 +263,6 @@ function VizualizacaoEstacao() {
                 toast.current?.show({ severity: 'error', summary: 'error', detail: 'Algo deu errado...', life: 3000 });
             });
     }, []);
-
-    const latitudeMap = parseFloat(estacao?.estacao.latitude);
-    const longitudeMap = parseFloat(estacao?.estacao.longitude);
-
-    console.log(latitudeMap, longitudeMap)
 
     return (
         <>
@@ -247,13 +278,14 @@ function VizualizacaoEstacao() {
                             <h1>{estacao?.estacao.nome}</h1>
                         </div>
                         <div className='container'>
-                            <div className="map">
-                            </div>
+                           {/* <div className="map">
+                                 <Mapa latitude={estacao?.estacao.latitude} longitude={estacao?.estacao.longitude}/>  
+                            </div>*/}
                             <div className='h2'>
                                 <div className='texto'>
                                     <h2>Localização:</h2>
-                                    <h3>{estacao?.estacao.longitude}</h3>
-                                    <h3>{estacao?.estacao.latitude}</h3>
+                                    <h3>Latitude: {estacao?.estacao.latitude}</h3>
+                                    <h3>Longitude: {estacao?.estacao.longitude}</h3>
                                 </div>
                             </div>
 
@@ -296,7 +328,10 @@ function VizualizacaoEstacao() {
                             <div>
                                 {estacao.dados.map((item) => (
                                     <li style={{ listStyle: 'none' }} key={item.id}>
-                                        <p>- {item.parametro.tipo}</p>
+                                        <div className="parametrosview">
+                                            <p>- {item.parametro.tipo}</p>
+                                            <Button onClick={() => confirm3(item.id)} icon="pi pi-trash" rounded outlined severity="danger" aria-label="Excluir" />
+                                        </div> 
                                     </li>
                                 ))}
                             </div>
@@ -305,7 +340,7 @@ function VizualizacaoEstacao() {
                         )}
 
                         <div className="grafico">
-                            <Chart nome={estacao?.estacao.nome} params={[{name: 'Vendas', data: [100, 150, 200, 300, 250, 400]}, {name: 'Batata', data: [100, 20, 30, 140]}]}/>
+                            {/* <Chart />  */}
                         </div>
                     </div>
                 </div>
