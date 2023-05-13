@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { Toast } from "primereact/toast";
 import NavbarAdmin from "../../../Components/NavbarAdmin";
 import { Password } from 'primereact/password';
+import Navbar from "../../../Components/Navbar";
 
 
 interface Cadastro {
@@ -56,6 +57,9 @@ function CadastroUsuarios() {
                 <Toast ref={toast} />
                 <section>
                     <main>
+                    <header>
+                    <Navbar/>
+                </header>
                         <div className="card">
                             <div className="campos">
                                 <p>Cadastrar-se</p>

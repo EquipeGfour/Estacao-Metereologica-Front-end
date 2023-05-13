@@ -10,6 +10,7 @@ import { Toast } from "primereact/toast";
 import { sign } from "crypto";
 import { SignatureKind } from "typescript";
 import { useCookies } from "react-cookie";
+import Navbar from "../../../Components/Navbar";
 
 
 
@@ -47,6 +48,7 @@ function Login() {
         <S.Container>
             <section>
                 <header>
+                    <Navbar/>
                 </header>
                 <main>
                     <form>
