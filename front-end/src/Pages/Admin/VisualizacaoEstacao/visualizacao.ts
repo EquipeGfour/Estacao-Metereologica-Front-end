@@ -2,14 +2,25 @@ import styled from "@emotion/styled";
 
 export const View = styled.div`
 
+.map{
+    width: 850px;
+    height: 450px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 2px 2px 5px #b6b6b6;
+}
+
 .formato{
-    width: 60%;
+    width: 90%;
     margin: 0 auto;
 }
 .view{
-    width:80%;
+    width:90%;
     margin: 0 auto;
-    margin-top: 5%;
+    margin-top: 50px;
 }
 .h2{
     text-align: center;
@@ -78,16 +89,32 @@ font-size: 35px;
     border-radius: 25px;
     width: 90%;
     margin: 0 auto;
+    margin-top: 30px;
     padding: 45px;
     background-color: #ffffff;
+    box-shadow: 2px 2px 5px #b6b6b6;
+    margin-bottom: 50px;
 }
 .botaoEditar{
     display: flex;
     flex-direction: column;
     gap: 5px;
+    text-align: center;
+    margin-top: 0;
+    color: #5652C7;
+    text-align: start;
+    margin-top: 0;
+    margin-right: 3vw ;
 }
-
-
-
+.parametrosview{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 20px;
+    box-shadow: 2px 2px 5px #b6b6b6;
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 5px;
+}
 
 `

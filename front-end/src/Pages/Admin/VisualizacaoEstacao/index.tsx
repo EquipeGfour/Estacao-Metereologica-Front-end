@@ -10,20 +10,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import { registerables } from "chart.js";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect";
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
 import Mapa from "../../../Components/Map";
-import Chart from "../../../Components/Chart";
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import Chart from "../../../Components/Chart";
 
 interface EstacaoDados {
     estacao: {
         id: number;
         nome: string;
         data_criacao: string;
-        latitude: any;
-        longitude: any;
+        latitude: string;
+        longitude: string;
         utc: string;
     };
     dados: {
@@ -43,7 +41,36 @@ interface EstacaoDados {
         tipo:string;
         valor:string
     }[];
+    ehp: {
+        id: number;
+        id_estacao: number;
+        id_parametro: number;
+        id_alerta: number;
+    };
+    medida: {
+        id: number;
+        unixtime: Date;
+        valor_medido: number;
+        id_estacao_has_parametro: number;
+        id_estacao: number;
+        id_parametro: number;
+        id_alerta: number;
+        parametro: {
+            id: number;
+            tipo: string;
+            unidade_medida: string;
+            fator_conversao: string;
+            offset: string;
+        };
+    }
+}
 
+  
+
+
+interface Medida {
+    name: string,
+    data: number[]
 }
 
 
@@ -54,10 +81,12 @@ function VizualizacaoEstacao() {
     const [visible3, setVisible3] = useState<boolean>(false);
     const [estacao, setEstacao] = useState<EstacaoDados>();
     const [alertas, setAlertas] = useState<EstacaoDados[]>([])
+    const [alerta, setAlerta] = useState<EstacaoDados| null>(null);
     const [parametros, setParametros] = useState<EstacaoDados[]>([])
     const [parametros2, setParametros2] = useState<EstacaoDados[]>([])
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
+    const [medidas, setMedidas] = useState<Medida[]>([])
     const [selectedParametro, setSelectedParametro] = useState<EstacaoDados | null>(null);
     const [selectedParametro2, setSelectedParametro2] = useState<EstacaoDados | null>(null);
     const [selectedAlertas, setSelectedAlertas] = useState<EstacaoDados[] | any>([]);
@@ -69,11 +98,6 @@ function VizualizacaoEstacao() {
         editarEstacao(data as EstacaoDados);
     }, []);
 
-    const accept = () => {
-        deleteEstacao(String(estacao?.estacao.id))
-    }
-
-
     const {
         register,
         handleSubmit,
@@ -84,6 +108,8 @@ function VizualizacaoEstacao() {
     const getAllAlertas = async () => {
         await api.get<EstacaoDados[]>(`/alerta/buscar`).then((res) => {
             setAlertas(res.data);
+            console.log(res.data);
+            
         }).catch((error) => {
             console.log(error);
         })
@@ -96,25 +122,34 @@ function VizualizacaoEstacao() {
             console.log(error);
         })
     }
-    const getAlertaId = async () => {
-        await api.get(`/alerta/buscar/${id}`).then((res) => {
-            setAlertas(res.data)
-            console.log(res.data); 
-        }).catch((error) => {
-            console.log(error);
-        })
-    }
+
     const confirm2 = () => {
         confirmDialog({
-            message: 'Deseja Confirmar ação?',
-            header: 'Deletar Confirmação',
+            message: `Tem certeza que deseja excluir o a estação ${estacao?.estacao.nome}?`,
+            header: 'Excluir estação',
             icon: 'pi pi-trash',
             acceptClassName: 'p-button-danger',
-            accept,
+            accept() {
+                deleteEstacao(String(estacao?.estacao.id))
+            },
         });
     };
+
+    const confirm3 = (id: number) => {
+        confirmDialog({
+            message: `Tem certeza que deseja excluir o parâmetro da estação ${estacao?.estacao.nome}?`,
+            header: 'Excluir estação',
+            icon: 'pi pi-trash',
+            acceptClassName: 'p-button-danger',
+            accept() {
+                deleteRelacaoParametro(String(id))
+            },
+        });
+    };
+
     useEffect(() => {
         getEstacao();
+        getAllEstacaoMedidas();
     }, [id]);
 
 
@@ -124,73 +159,16 @@ function VizualizacaoEstacao() {
         setParametros2(response.data);
     }
 
+    const getAllEstacaoMedidas = async () => {
+        const response = await api.get<Medida[]>(`/medida/buscar-estacaoMedida/${id}`)
+        console.log(response.data)
+        setMedidas(response.data)
+    }
+
     useEffect(() => {
         getAllParametros();
         getAllAlertas();
-        getAlertaId();
     }, [])
-
-    useEffect(() => {
-        const documentStyle = getComputedStyle(document.documentElement);
-        const textColor = documentStyle.getPropertyValue('--text-color');
-        const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
-        const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
-        const data = {
-            labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho'],
-            datasets: [
-                {
-                    label: 'Primeira Semana',
-                    backgroundColor: documentStyle.getPropertyValue('--blue-500'),
-                    borderColor: documentStyle.getPropertyValue('--blue-500'),
-                    data: [65, 59, 80, 81, 56, 55, 40]
-                },
-                {
-                    label: 'Segunda Semana',
-                    backgroundColor: documentStyle.getPropertyValue('--pink-500'),
-                    borderColor: documentStyle.getPropertyValue('--pink-500'),
-                    data: [28, 48, 40, 19, 86, 27, 90]
-                }
-            ]
-        };
-        const options = {
-            maintainAspectRatio: false,
-            aspectRatio: 0.8,
-            plugins: {
-                legend: {
-                    labels: {
-                        fontColor: textColor
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        color: textColorSecondary,
-                        font: {
-                            weight: 500
-                        }
-                    },
-                    grid: {
-                        display: false,
-                        drawBorder: false
-                    }
-                },
-                y: {
-                    ticks: {
-                        color: textColorSecondary
-                    },
-                    grid: {
-                        color: surfaceBorder,
-                        drawBorder: false
-                    }
-                }
-            }
-        };
-
-        setChartData(data);
-        setChartOptions(options);
-    }, []);
-
 
     const deleteEstacao = useCallback(async (id: string) => {
         await api
@@ -264,10 +242,20 @@ function VizualizacaoEstacao() {
             });
     }, []);
 
-    const latitudeMap = parseFloat(estacao?.estacao.latitude);
-    const longitudeMap = parseFloat(estacao?.estacao.longitude);
-
-    console.log(latitudeMap, longitudeMap)
+    const deleteRelacaoParametro = useCallback(async (id: string) => {
+        await api
+            .delete(`/ehp/excluir/${id}`)
+            .then(function (response) {
+                if (response) {
+                    navigate(0);
+                }
+                toast.current?.show({ severity: 'success', summary: 'Sucesso', detail: 'Estação Deletada.', life: 3000 });
+            })
+            .catch((err) => {
+                console.log(err);
+                toast.current?.show({ severity: 'error', summary: 'error', detail: 'Algo deu errado...', life: 3000 });
+            });
+    }, []);
 
     return (
         <>
@@ -284,24 +272,18 @@ function VizualizacaoEstacao() {
                         </div>
                         <div className='container'>
                             <div className="map">
+                                 <Mapa latitude={parseFloat(estacao?.estacao.latitude || "0")} longitude={parseFloat(estacao?.estacao.longitude || "0")}/>  
                             </div>
-                            <div className='h2'>
-                                <div className='texto'>
-                                    <h2>Localização:</h2>
-                                    <h3>{estacao?.estacao.longitude}</h3>
-                                    <h3>{estacao?.estacao.latitude}</h3>
-                                </div>
-                            </div>
-
                             <div className="card flex justify-content-center">
                                 <div className='botaoEditar'>
-                                    <Button icon="pi pi-pencil" onClick={() => setVisible(true)} />
-                                    <Button icon="pi pi-plus" onClick={() => setVisible2(true)} />
-                                    <Button icon="pi pi-exclamation-triangle" onClick={() => setVisible3(true)} />
+                                    <Button icon="pi pi-pencil" onClick={() => setVisible(true)} label="Editar Estação" />
+                                    <Button icon="pi pi-plus" onClick={() => setVisible2(true)} label="Adicionar Parâmetros" />
+                                    <Button icon="pi pi-exclamation-triangle" onClick={() => setVisible3(true)} label="Vincular Alerta" />
+                                    <Button onClick={confirm2} icon="pi pi-trash" label="Excluir Estação" />
+                                    <h2>Localização:</h2>
+                                    <h3>Latitude: {estacao?.estacao.latitude}</h3>
+                                    <h3>Longitude: {estacao?.estacao.longitude}</h3>
                                     <ConfirmDialog />
-                                    <div className="card flex flex-wrap gap-2 justify-content-center">
-                                        <Button onClick={confirm2} icon="pi pi-trash" ></Button>
-                                    </div>
                                 </div>
                                 <Dialog header="Editar Estação" visible={visible} style={{ width: '50vw' }} onHide={() => setVisible(false)} >
                                     <form onSubmit={handleSubmit(onSubmit)}>
@@ -353,7 +335,10 @@ function VizualizacaoEstacao() {
                             <div>
                                 {estacao.dados.map((item) => (
                                     <li style={{ listStyle: 'none' }} key={item.id}>
-                                        <p>- {item.parametro.tipo}</p>
+                                        <div className="parametrosview">
+                                            <p>- {item.parametro.tipo}</p>
+                                            <Button onClick={() => confirm3(item.id)} icon="pi pi-trash" rounded text severity="danger" aria-label="Excluir" />
+                                        </div>
                                     </li>
                                 ))}
                             </div>
@@ -364,10 +349,9 @@ function VizualizacaoEstacao() {
 
 
                         <div className="grafico">
+                            <Chart props={{nome: estacao?.estacao.nome, series: medidas}} />
                         </div>
                     </div>
-
-
                 </div>
             </S.View>
         </>

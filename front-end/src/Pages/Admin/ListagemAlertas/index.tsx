@@ -52,6 +52,14 @@ function ListagemAlertas() {
     async function getAllAlertas() {
         const response = await api.get<Alerta[]>("/alerta/buscar");
         setAlertas(response.data);
+        const dados = response.data.map(alerta=>{
+            if (alerta.tipo === 'acima') {
+                alerta.tipo = '>'
+            }
+            if(alerta.tipo === 'abaixo') {
+                alerta.tipo = '<'
+            }
+        })
     }
 
     useEffect(() => {
@@ -141,7 +149,7 @@ function ListagemAlertas() {
                                     <Column selectionMode="multiple" style={{ width: '1%' }} exportable={false}></Column>
                                     <Column field="nome" header="Nome" editor={(options) => textEditor(options)} style={{ width: '25%' }}></Column>
                                     <Column field="mensagem" header="Mensagem" editor={(options) => textEditor(options)} style={{ width: '30%' }}></Column>
-                                    <Column field="tipo" header="Tipo" editor={(options) => textEditor(options)} style={{ width: '30%' }}></Column>
+                                    <Column field="tipo" header="Condição" editor={(options) => textEditor(options)} style={{ width: '30%' }}></Column>
                                     <Column field="valor" header="valor" editor={(options) => textEditor(options)} style={{ width: '30%' }}></Column>
                                     <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}></Column>
                                 </DataTable>
