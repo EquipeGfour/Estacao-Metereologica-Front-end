@@ -34,6 +34,13 @@ interface EstacaoDados {
             offset: string;
         };
     }[];
+    Alerta: {
+        id: number;
+        nome: string;
+        mensagem: string;
+        tipo:string;
+        valor:string
+    }[];
     ehp: {
         id: number;
         id_estacao: number;
@@ -58,6 +65,9 @@ interface EstacaoDados {
     }
 }
 
+  
+
+
 interface Medida {
     name: string,
     data: number[]
@@ -68,10 +78,18 @@ function VizualizacaoEstacao() {
 
     const [visible, setVisible] = useState<boolean>(false);
     const [visible2, setVisible2] = useState<boolean>(false);
+    const [visible3, setVisible3] = useState<boolean>(false);
     const [estacao, setEstacao] = useState<EstacaoDados>();
+    const [alertas, setAlertas] = useState<EstacaoDados[]>([])
+    const [alerta, setAlerta] = useState<EstacaoDados| null>(null);
     const [parametros, setParametros] = useState<EstacaoDados[]>([])
+    const [parametros2, setParametros2] = useState<EstacaoDados[]>([])
+    const [chartData, setChartData] = useState({});
+    const [chartOptions, setChartOptions] = useState({});
     const [medidas, setMedidas] = useState<Medida[]>([])
     const [selectedParametro, setSelectedParametro] = useState<EstacaoDados | null>(null);
+    const [selectedParametro2, setSelectedParametro2] = useState<EstacaoDados | null>(null);
+    const [selectedAlertas, setSelectedAlertas] = useState<EstacaoDados[] | any>([]);
     const { id } = useParams();
     const navigate = useNavigate();
     const toast = useRef<Toast>(null);
@@ -87,6 +105,15 @@ function VizualizacaoEstacao() {
     } = useForm({
         mode: "onBlur",
     });
+    const getAllAlertas = async () => {
+        await api.get<EstacaoDados[]>(`/alerta/buscar`).then((res) => {
+            setAlertas(res.data);
+            console.log(res.data);
+            
+        }).catch((error) => {
+            console.log(error);
+        })
+    }
 
     const getEstacao = async () => {
         await api.get(`/ehp/parametrosEstacao/${id}`).then((res) => {
@@ -95,6 +122,7 @@ function VizualizacaoEstacao() {
             console.log(error);
         })
     }
+
     const confirm2 = () => {
         confirmDialog({
             message: `Tem certeza que deseja excluir o a estação ${estacao?.estacao.nome}?`,
@@ -128,6 +156,7 @@ function VizualizacaoEstacao() {
     const getAllParametros = async () => {
         const response = await api.get<EstacaoDados[]>(`/parametro/buscar-parametro`);
         setParametros(response.data);
+        setParametros2(response.data);
     }
 
     const getAllEstacaoMedidas = async () => {
@@ -138,6 +167,7 @@ function VizualizacaoEstacao() {
 
     useEffect(() => {
         getAllParametros();
+        getAllAlertas();
     }, [])
 
     const deleteEstacao = useCallback(async (id: string) => {
@@ -172,6 +202,27 @@ function VizualizacaoEstacao() {
                 console.log(error);
             })
     };
+
+    const VincularAlerta = async () => {
+        const data = {
+            id_estacao: estacao?.estacao.id,
+            id_parametros: selectedParametro2,
+            id_alerta: selectedAlertas
+        }
+        await api.put(`/alerta/vincular`, data)
+            .then((res) => {
+                console.log(res)
+                toast.current?.show({ severity: 'success', summary: 'Sucesso', detail: 'Parametros Registrados', life: 3000 });
+                getEstacao();
+                setVisible3(false);
+            })
+            .catch(error => {
+                toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Algo deu errado...', life: 3000 });
+                console.log(error);
+            })
+    };
+    
+
 
 
     const editarEstacao = useCallback(async (data: EstacaoDados) => {
@@ -227,6 +278,7 @@ function VizualizacaoEstacao() {
                                 <div className='botaoEditar'>
                                     <Button icon="pi pi-pencil" onClick={() => setVisible(true)} label="Editar Estação" />
                                     <Button icon="pi pi-plus" onClick={() => setVisible2(true)} label="Adicionar Parâmetros" />
+                                    <Button icon="pi pi-exclamation-triangle" onClick={() => setVisible3(true)} label="Vincular Alerta" />
                                     <Button onClick={confirm2} icon="pi pi-trash" label="Excluir Estação" />
                                     <h2>Localização:</h2>
                                     <h3>Latitude: {estacao?.estacao.latitude}</h3>
@@ -257,8 +309,26 @@ function VizualizacaoEstacao() {
                                     </div>
                                     <Button label="Adicionar Parametro" style={{ marginLeft: '69%', marginTop: '25px' }} icon="pi pi-check" onClick={() => postParametros()} autoFocus type="submit" />
                                 </Dialog>
+                                {/* alerta */}
+                                <Dialog header="Adicionar Alerta" visible={visible3} style={{ width: '50vw' }} onHide={() => setVisible3(false)}>
+                                    <br />
+                                    <div className="card flex justify-content-center">
+                                        <InputNumber value={estacao?.estacao.id}
+                                            placeholder="ID da Estação" disabled className="w-full md:w-100rem" />
+                                    </div>
+                                    <br />
+                                    <div className="card flex justify-content-center">
+                                        <MultiSelect value={selectedParametro2} onChange={(e) => setSelectedParametro2(e.value)} options={parametros2} optionLabel="tipo"
+                                            filter placeholder="ID do Parametro" maxSelectedLabels={1} className="w-full md:w-100rem" optionValue="id" />
+                                    </div>
+                                    <br />
+                                    <div className="card flex justify-content-center">
+                                        <MultiSelect value={selectedAlertas} onChange={(e) => setSelectedAlertas(e.value)} options={alertas} optionLabel="nome"
+                                            filter placeholder="ID do Alerta" maxSelectedLabels={1} className="w-full md:w-100rem" optionValue="id" />
+                                    </div>
+                                    <Button label="Vincular Alerta" style={{ marginLeft: '69%', marginTop: '25px' }} icon="pi pi-check" onClick={() => VincularAlerta()} autoFocus type="submit" />
+                                </Dialog>
                             </div>
-
                         </div>
                         <p><strong>Parâmetros:</strong></p>
                         {estacao?.dados ? (
@@ -275,6 +345,9 @@ function VizualizacaoEstacao() {
                         ) : (
                             <p>Nenhum dado encontrado.</p>
                         )}
+
+
+
                         <div className="grafico">
                             <Chart props={{nome: estacao?.estacao.nome, series: medidas}} />
                         </div>
