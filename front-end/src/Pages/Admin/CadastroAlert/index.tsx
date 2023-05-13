@@ -14,7 +14,8 @@ import { Toast } from "primereact/toast";
 interface CadastroAlert {
     nome: string;
     mensagem: string;
-    condicao: string;
+    tipo: string;
+    valor:string;
 };
 
 
@@ -27,7 +28,8 @@ function CadastroAlertas() {
             .post<CadastroAlert>(`/alerta/cadastrar`, {
                 nome: data.nome,
                 mensagem: data.mensagem,
-                condicao: data.condicao,
+                tipo:data.tipo,
+                valor:data.valor
             })
             .then(function (response) {
                 console.log(response);
@@ -74,8 +76,12 @@ function CadastroAlertas() {
                                         <InputTextarea rows={7} {...register("mensagem")} required />
                                     </div>
                                     <div className="localizacao">
-                                        <label htmlFor="localization">Condição</label>
-                                        <InputText type="text" placeholder="" {...register("condicao")} required />
+                                        <label htmlFor="localization">Tipo</label>
+                                        <InputText type="text" placeholder="" {...register("tipo")} required />
+                                    </div>
+                                    <div className="localizacao">
+                                        <label htmlFor="localization">Valor</label>
+                                        <InputText type="text" placeholder="" {...register("valor")} required />
                                     </div>
                                     <div className="botao">
                                         <Button label="Cadastrar" type="submit" onSubmit={() => navigate(`/`)} className="p-button-outlined" />
