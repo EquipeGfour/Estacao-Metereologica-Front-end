@@ -9,12 +9,13 @@ import { useNavigate } from "react-router-dom";
 function NavbarAdmin() {
     const navigate = useNavigate();
     const start = <img alt="logo" src="https://tecsus.com.br/wp-content/uploads/2020/10/logo_tecsus_horizontal.png" height="40" className="tecsus"></img>;
+    const end =  <Button label="Logout" onClick={() => navigate(`/`)} className="p-button-outlined " />
     const items: MenuItem[] = [
         {
             label: 'Home',
             icon: 'pi pi-fw pi-home',
             command: (event) => {
-                navigate("/");
+                navigate("/home");
             },
         },
         {
@@ -84,12 +85,12 @@ function NavbarAdmin() {
                     },
                 },
             ]
-        }
+        },
     ]
     return (
         <>
             <S.NavBarAdmin>
-                <Menubar model={items} start={start} />
+                <Menubar model={items} start={start} end={end} />
             </S.NavBarAdmin>
         </>
     )

@@ -23,9 +23,13 @@ export const View = styled.div`
     margin-top: 50px;
 }
 .h2{
-    text-align: center;
+    width:96%;
+    text-align: start;
     margin-top: 0;
     color: #5652C7;
+    font-size: 23px;
+    display: flex; /* or inline-flex */
+    justify-content: space-between;
 }
 .descricao{
     width: 70%;
@@ -56,6 +60,7 @@ box-shadow:  20px 20px 60px #bebebe,
 p{width:65%}
 
 .container {
+    
   display: flex; /* or inline-flex */
   justify-content: space-between;
 }
@@ -87,7 +92,6 @@ font-size: 35px;
 }
 .grafico{
     border-radius: 25px;
-    width: 90%;
     margin: 0 auto;
     margin-top: 30px;
     padding: 45px;

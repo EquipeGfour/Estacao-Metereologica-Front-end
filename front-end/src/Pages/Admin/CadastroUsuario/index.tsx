@@ -40,7 +40,7 @@ function CadastroUsuarios() {
 
     const onSubmit = useCallback(async (data: Cadastro) => {
         cadastroUsuario(data);
-        navigate("/listagem-estacao")
+        navigate("/")
     }, []);
     const {
         register,
@@ -55,9 +55,6 @@ function CadastroUsuarios() {
             <S.Container>
                 <Toast ref={toast} />
                 <section>
-                    <header>
-                        <NavbarAdmin />
-                    </header>
                     <main>
                         <div className="card">
                             <div className="campos">
@@ -75,17 +72,15 @@ function CadastroUsuarios() {
                                         <label htmlFor="localization">Senha</label>
                                         <InputText type="password" placeholder="" {...register("senha")} required />
                                     </div>
-                                    {/* <div className="localizacao">
-                                    <label htmlFor="localization">Confirmação de Senha</label>
-                                    <InputText type="text" placeholder="" value={values} required />
-                                    </div> */}
                                     <div className="botao">
                                         <Button label="Cadastrar-se" type="submit" onSubmit={() => navigate(`/`)} className="p-button-outlined" />
                                     </div>
                                 </form>
-                                <div className="linha"></div>
-                                <div className="criar-conta">
-                                    <small>Já possui uma conta ? <a href="login">Entrar</a></small>
+                                <br />
+                                    <hr  style={{display:'flex',justifyContent:'row',width:"100%"}}/>
+                                    <div className="criar-conta">
+                                    <p  style={{paddingTop:14}}>Já possui uma conta ? </p>
+                                    <Button label="Login" onClick={() => navigate(`/`)} className="p-button-outlined w-4" />
                                 </div>
                             </div>
                         </div>

@@ -23,7 +23,6 @@ function Login() {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
     const toast = useRef<Toast>(null);
-    const [cookie, setCookies] = useCookies();
 
     const login = async (event: any) => {
         event.preventDefault();
@@ -34,7 +33,7 @@ function Login() {
             console.log(res)
             setEmail("")
             setPassword("")
-            navigate("/")
+            navigate("/home")
         }
         ).catch((erro) => {
             event.preventDefault();
@@ -63,9 +62,6 @@ function Login() {
                                     <label htmlFor="localization">Senha</label>
                                     <InputText type="password" placeholder="" value={password} onChange={(e) => setPassword(e.target.value)} required />
                                 </div>
-                                {/* <small id="username-help">
-                                    Esqueceu sua senha ? =)
-                                </small> */}
                                 <div className="botao">
                                     <Button label="Login" type="submit" onClick={login} className="p-button-outlined" />
                                 </div>

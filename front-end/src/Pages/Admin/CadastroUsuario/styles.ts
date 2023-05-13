@@ -116,7 +116,7 @@ section{
                 .criar-conta{
                     margin-top: 18px ;
                     display: flex;
-                    align-items: left;
+                    justify-content: space-between;
                     color: #3E3B8E;
                     font-size: 1vw;
                 }
