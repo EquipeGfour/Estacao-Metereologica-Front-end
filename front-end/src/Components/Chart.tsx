@@ -1,29 +1,21 @@
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
+import { useEffect, useState } from 'react'
 
-function Chart(nome:any, dados:any, parametroNome:any, params: any ) {
-    var param2: any[] = []
-    params.map((param: any)=>{
-        const parametros = {
-            name: param.parametroNome,
-            data: param.dados.dados
-        }
-        param2.push(parametros)
-    })
-
+function Chart({props}:any) {
 
     const options = {
         chart: {
             type: 'line'
         },
         title: {
-            text: nome.nome
+            text: props.nome
         },
-        series: [param2]
+        series: props.series
     }
 
-    return(
-        <HighchartsReact highcharts={Highcharts} options={options}/>
+    return (
+        <HighchartsReact highcharts={Highcharts} options={options} />
     )
 }
 
