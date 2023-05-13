@@ -8,7 +8,9 @@ import VizualizacaoEstacao from "../Pages/Admin/VisualizacaoEstacao";
 import Login from "../Pages/Admin/Login";
 import ListagemParametros from "../Pages/Admin/ListagemParametros";
 import ListagemAlertas from "../Pages/Admin/ListagemAlertas";
+import ListagemAlertasDisparados from "../Pages/Admin/ListagemAlertasDisparados";
 import HomeAdmin from "../Pages/Admin/HomeAdmin";
+import ListagemMedidas from "../Pages/Admin/ListagemMedidas";
 
 
 function Routes() {
@@ -22,11 +24,12 @@ function Routes() {
             <Route path="/cadastro-usuario" element={< CadastroUsuario />} />
             <Route path="/visualizacao-estacao" element={< VizualizacaoEstacao />} />
             <Route path="/visualizacao-estacao/:id" element={< VizualizacaoEstacao />} />
-            <Route path="/login" element={< Login />} />
-            <Route path="/" element={< HomeAdmin />} />
+            <Route path="/" element={< Login />} />
+            <Route path="/home" element={< HomeAdmin />} />
             <Route path="/listagem-estacao" element={< ListagemEstacao />} />
             <Route path="/listagem-alertas" element={<ListagemAlertas />} />
-
+            <Route path="/listagem-alertas-disparados" element={<ListagemAlertasDisparados />} />
+            <Route path="/listagem-medidas" element ={<ListagemMedidas/>} />
         </RoutesWrapper>
     );
 }

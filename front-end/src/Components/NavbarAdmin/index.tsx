@@ -9,17 +9,18 @@ import { useNavigate } from "react-router-dom";
 function NavbarAdmin() {
     const navigate = useNavigate();
     const start = <img alt="logo" src="https://tecsus.com.br/wp-content/uploads/2020/10/logo_tecsus_horizontal.png" height="40" className="tecsus"></img>;
+    const end =  <Button label="Logout" onClick={() => navigate(`/`)} className="p-button-outlined " />
     const items: MenuItem[] = [
         {
             label: 'Home',
             icon: 'pi pi-fw pi-home',
             command: (event) => {
-                navigate("/");
+                navigate("/home");
             },
         },
         {
             label: 'Cadastrar',
-            icon: 'pi pi-fw pi-list',
+            icon: 'pi pi-align-justify',
             items: [
                 {
                     label: 'Estação',
@@ -43,9 +44,49 @@ function NavbarAdmin() {
                     },
                 },
             ]
-        }
+        }, 
+        {
+            label: 'Listagem',
+            icon: 'pi pi-align-justify',
+            items: [
+                {
+                    label: 'Estação',
+                    icon: 'pi pi-fw pi-list',
+                    command: (event) => {
+                        navigate("/listagem-estacao");
+                    },
+                },
+                {
+                    label: 'Parâmetro',
+                    icon: 'pi pi-fw pi-list',
+                    command: (event) => {
+                        navigate("/listagem-parametros");
+                    },
+                },
+                {
+                    label: 'Alerta',
+                    icon: 'pi pi-fw pi-list',
+                    command: (event) => {
+                        navigate("/listagem-alertas");
+                    },
+                },
+                {
+                    label: 'Medida',
+                    icon: 'pi pi-fw pi-list',
+                    command: (event) => {
+                        navigate("/listagem-medidas");
+                    },
+                },
+                {
+                    label: 'Alertas Disparados',
+                    icon: 'pi pi-fw pi-list',
+                    command: (event) => {
+                        navigate("/listagem-alertas-disparados");
+                    },
+                },
+            ]
+        },
     ]
-    const end = <Button icon={'pi pi-fw pi-sign-out'} />
     return (
         <>
             <S.NavBarAdmin>
