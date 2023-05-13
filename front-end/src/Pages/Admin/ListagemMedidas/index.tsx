@@ -22,10 +22,8 @@ function ListagemMedidas() {
 
     const buscarMedidas = async () =>{
         axios.get('http://localhost:5000/medida/buscar').then(
-            response => {
-            console.log(response);
-            
-              setMedidas(response.data)
+            response => {            
+                setMedidas(response.data)
             }
         )
     }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, SetStateAction, useRef } from "react";
+import React, { useState, useEffect, useCallback, SetStateAction, useRef, useContext } from "react";
 import { InputText } from "primereact/inputtext";
 import * as S from "./styles";
 import { Button } from 'primereact/button';
@@ -7,25 +7,40 @@ import { api } from "../../../service/api";
 import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { Toast } from "primereact/toast";
+import { sign } from "crypto";
+import { SignatureKind } from "typescript";
+import { useCookies } from "react-cookie";
 
 
 
-interface Login {
-    id: SetStateAction<number | undefined>;
-    nome: String,
-    data_criacao: String,
-    latitude: String,
-    longitude: String,
-    utc: String
+interface UserLogin {
+    email: string;
+    senha: string;
 }
 
 function Login() {
-    const [id, setId] = useState<number>();
-    const [value, setValue] = useState<string>();
-    const [values, setValues] = useState<string>();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const navigate = useNavigate();
-    
+    const toast = useRef<Toast>(null);
 
+    const login = async (event: any) => {
+        event.preventDefault();
+        await axios.post("http://localhost:5000/login/", {
+            email: email,
+            senha: password,
+        }).then((res) => {
+            console.log(res)
+            setEmail("")
+            setPassword("")
+            navigate("/home")
+        }
+        ).catch((erro) => {
+            event.preventDefault();
+            console.error('Erro', erro.response)
+            toast.current?.show({ severity: 'error', summary: 'Erro ao fazer login', detail: 'Email ou senha inválidos' });
+        })
+    }
 
     return (
 
@@ -35,22 +50,20 @@ function Login() {
                 </header>
                 <main>
                     <form>
+                        <Toast ref={toast} />
                         <div className="card">
                             <div className="campos">
                                 <p>Login</p>
                                 <div className="estacaoNome">
                                     <label htmlFor="username">E-mail</label>
-                                    <InputText className="inputNome" type="text" value={value} required />
+                                    <InputText className="inputNome" type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
                                 </div>
                                 <div className="localizacao">
                                     <label htmlFor="localization">Senha</label>
-                                    <InputText type="text" placeholder="" value={values} required />
+                                    <InputText type="password" placeholder="" value={password} onChange={(e) => setPassword(e.target.value)} required />
                                 </div>
-                                {/* <small id="username-help">
-                                    Esqueceu sua senha ? =)
-                                </small> */}
                                 <div className="botao">
-                                    <Button label="Login" type="submit" className="p-button-outlined" />
+                                    <Button label="Login" type="submit" onClick={login} className="p-button-outlined" />
                                 </div>
                                 <div className="linha"></div>
                                 <div className="criar-conta">

@@ -7,9 +7,8 @@ import { InputNumber } from 'primereact/inputnumber'
 import NavbarAdmin from "../../../Components/NavbarAdmin";
 import { api } from "../../../service/api";
 import { useNavigate, useParams } from "react-router-dom";
-import { registerables } from "chart.js";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect";
+import { MultiSelect} from "primereact/multiselect";
 import { Toast } from 'primereact/toast';
 import Mapa from "../../../Components/Map";
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
@@ -64,10 +63,6 @@ interface EstacaoDados {
         };
     }
 }
-
-  
-
-
 interface Medida {
     name: string,
     data: number[]
@@ -81,11 +76,8 @@ function VizualizacaoEstacao() {
     const [visible3, setVisible3] = useState<boolean>(false);
     const [estacao, setEstacao] = useState<EstacaoDados>();
     const [alertas, setAlertas] = useState<EstacaoDados[]>([])
-    const [alerta, setAlerta] = useState<EstacaoDados| null>(null);
     const [parametros, setParametros] = useState<EstacaoDados[]>([])
     const [parametros2, setParametros2] = useState<EstacaoDados[]>([])
-    const [chartData, setChartData] = useState({});
-    const [chartOptions, setChartOptions] = useState({});
     const [medidas, setMedidas] = useState<Medida[]>([])
     const [selectedParametro, setSelectedParametro] = useState<EstacaoDados | null>(null);
     const [selectedParametro2, setSelectedParametro2] = useState<EstacaoDados | null>(null);
@@ -107,9 +99,7 @@ function VizualizacaoEstacao() {
     });
     const getAllAlertas = async () => {
         await api.get<EstacaoDados[]>(`/alerta/buscar`).then((res) => {
-            setAlertas(res.data);
-            console.log(res.data);
-            
+            setAlertas(res.data);            
         }).catch((error) => {
             console.log(error);
         })
@@ -142,7 +132,7 @@ function VizualizacaoEstacao() {
             icon: 'pi pi-trash',
             acceptClassName: 'p-button-danger',
             accept() {
-                deleteRelacaoParametro(String(id))
+                deleteRelacaoParametro(String(id));
             },
         });
     };
@@ -161,8 +151,7 @@ function VizualizacaoEstacao() {
 
     const getAllEstacaoMedidas = async () => {
         const response = await api.get<Medida[]>(`/medida/buscar-estacaoMedida/${id}`)
-        console.log(response.data)
-        setMedidas(response.data)
+        setMedidas(response.data);
     }
 
     useEffect(() => {
@@ -269,10 +258,11 @@ function VizualizacaoEstacao() {
                     <div className='view'>
                         <div className='h2'>
                             <h1>{estacao?.estacao.nome}</h1>
+                            <h1>#{estacao?.estacao.id}</h1>
                         </div>
                         <div className='container'>
                             <div className="map">
-                                 <Mapa latitude={parseFloat(estacao?.estacao.latitude || "0")} longitude={parseFloat(estacao?.estacao.longitude || "0")}/>  
+                                <Mapa latitude={parseFloat(estacao?.estacao.latitude || "0")} longitude={parseFloat(estacao?.estacao.longitude || "0")}/>  
                             </div>
                             <div className="card flex justify-content-center">
                                 <div className='botaoEditar'>
@@ -330,13 +320,13 @@ function VizualizacaoEstacao() {
                                 </Dialog>
                             </div>
                         </div>
-                        <p><strong>Parâmetros:</strong></p>
+                        <p className="h2"><strong>Parâmetros:</strong></p>
                         {estacao?.dados ? (
                             <div>
                                 {estacao.dados.map((item) => (
                                     <li style={{ listStyle: 'none' }} key={item.id}>
                                         <div className="parametrosview">
-                                            <p>- {item.parametro.tipo}</p>
+                                                <p>- <strong>{item.parametro.tipo}</strong></p>
                                             <Button onClick={() => confirm3(item.id)} icon="pi pi-trash" rounded text severity="danger" aria-label="Excluir" />
                                         </div>
                                     </li>

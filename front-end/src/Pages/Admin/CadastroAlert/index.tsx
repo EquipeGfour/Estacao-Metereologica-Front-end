@@ -77,7 +77,7 @@ function CadastroAlertas() {
                                     </div>
                                     <div className="localizacao">
                                         <label htmlFor="localization">Tipo</label>
-                                        <InputText type="text" placeholder="" {...register("tipo")} required />
+                                        <InputText type="text" placeholder="Ex: acima ou abaixo" {...register("tipo")} required />
                                     </div>
                                     <div className="localizacao">
                                         <label htmlFor="localization">Valor</label>
