@@ -90,6 +90,7 @@ font-size: 35px;
     color: black;
     margin: 0 auto;
 }
+
 .grafico{
     border-radius: 25px;
     margin: 0 auto;
@@ -113,11 +114,11 @@ font-size: 35px;
 .parametrosview{
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    margin-top: 20px;
+    justify-content: start;
+    margin-top: 5px;
     box-shadow: 2px 2px 5px #b6b6b6;
     background-color: #ffffff;
-    border-radius: 15px;
+    border-radius: 10px;
     padding: 5px;
 }
 
