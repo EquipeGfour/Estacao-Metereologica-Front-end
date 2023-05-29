@@ -58,11 +58,11 @@ function Login() {
                                 <p>Login</p>
                                 <div className="estacaoNome">
                                     <label htmlFor="username">E-mail</label>
-                                    <InputText className="inputNome" type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
+                                    <InputText name="email" className="inputNome" type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
                                 </div>
                                 <div className="localizacao">
                                     <label htmlFor="localization">Senha</label>
-                                    <InputText type="password" placeholder="" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                                    <InputText name="senha" type="password" placeholder="" value={password} onChange={(e) => setPassword(e.target.value)} required />
                                 </div>
                                 <div className="botao">
                                     <Button label="Login" type="submit" onClick={login} className="p-button-outlined" />
