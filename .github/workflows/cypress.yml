@@ -1,0 +1,20 @@
+name: Testes do Cypress
+
+on:
+  push:
+    branches: [Dev]
+      
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código-fonte
+        uses: actions/checkout@v2
+
+      - name: Instalar dependências
+        run: npm i
+
+      - name: Executar testes do Cypress
+        run: npm run cypress:open

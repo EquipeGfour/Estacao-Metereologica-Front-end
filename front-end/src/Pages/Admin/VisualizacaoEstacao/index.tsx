@@ -269,7 +269,7 @@ function VizualizacaoEstacao() {
                                     <Button icon="pi pi-pencil" onClick={() => setVisible(true)} label="Editar Estação" />
                                     <Button icon="pi pi-plus" onClick={() => setVisible2(true)} label="Adicionar Parâmetros" />
                                     <Button icon="pi pi-exclamation-triangle" onClick={() => setVisible3(true)} label="Vincular Alerta" />
-                                    <Button onClick={confirm2} icon="pi pi-trash" label="Excluir Estação" />
+                                    <Button name="excluirEstacao" onClick={confirm2} icon="pi pi-trash" label="Excluir Estação" />
                                     <h2>Localização:</h2>
                                     <h3>Latitude: {estacao?.estacao.latitude}</h3>
                                     <h3>Longitude: {estacao?.estacao.longitude}</h3>
