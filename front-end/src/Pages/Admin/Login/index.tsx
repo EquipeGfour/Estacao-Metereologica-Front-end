@@ -69,7 +69,7 @@ function Login() {
                                 </div>
                                 <div className="linha"></div>
                                 <div className="criar-conta">
-                                    <small>Ainda não possui uma conta ? <a href="/cadastro-usuario">Criar conta</a></small>
+                                    <small>Ainda não possui uma conta?  <a className="ajuste-link" href="/cadastro-usuario">Criar conta</a></small>
                                 </div>
                             </div>
                         </div>
