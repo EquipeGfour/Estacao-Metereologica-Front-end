@@ -13,6 +13,7 @@ import { Toast } from 'primereact/toast';
 import Mapa from "../../../Components/Map";
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import Chart from "../../../Components/Chart";
+import { Accordion, AccordionTab } from 'primereact/accordion';
 
 interface EstacaoDados {
     estacao: {
@@ -31,6 +32,7 @@ interface EstacaoDados {
             unidade_medida: string;
             fator_conversao: string;
             offset: string;
+            descricao:string
         };
     }[];
     Alerta: {
@@ -145,15 +147,31 @@ function VizualizacaoEstacao() {
 
     const getAllParametros = async () => {
         const response = await api.get<EstacaoDados[]>(`/parametro/buscar-parametro`);
+        console.log(response)
         setParametros(response.data);
         setParametros2(response.data);
     }
 
     const getAllEstacaoMedidas = async () => {
-        const response = await api.get<Medida[]>(`/medida/buscar-estacaoMedida/${id}`)
-        setMedidas(response.data);
+        const response = await api.get<Medida[]>(`/medida/buscar-estacaoMedida/${id}`)    
+        console.log(response)   
+        const dados =  response.data.map((medida:Medida)=>{
+            const valores = medida.data.reduce((acc: any, cur: any) => {
+                acc.x.push(formatDate(cur.date))                
+                acc.y.push(cur.value)
+                return acc
+            }, { x: [], y: [] })
+            return {
+                name:medida.name,
+                data:valores
+            } as Medida
+        })
+        setMedidas(dados);
     }
-
+    const formatDate = (data:string) => {
+        const [formated,] = new Date(data).toLocaleString("pt-BR", {timeZone: "America/Sao_Paulo"}).split(',')
+        return formated;
+    }
     useEffect(() => {
         getAllParametros();
         getAllAlertas();
@@ -269,7 +287,7 @@ function VizualizacaoEstacao() {
                                     <Button icon="pi pi-pencil" onClick={() => setVisible(true)} label="Editar Estação" />
                                     <Button icon="pi pi-plus" onClick={() => setVisible2(true)} label="Adicionar Parâmetros" />
                                     <Button icon="pi pi-exclamation-triangle" onClick={() => setVisible3(true)} label="Vincular Alerta" />
-                                    <Button name="excluirEstacao" onClick={confirm2} icon="pi pi-trash" label="Excluir Estação" />
+                                    <Button onClick={confirm2} icon="pi pi-trash" label="Excluir Estação" />
                                     <h2>Localização:</h2>
                                     <h3>Latitude: {estacao?.estacao.latitude}</h3>
                                     <h3>Longitude: {estacao?.estacao.longitude}</h3>
@@ -324,23 +342,37 @@ function VizualizacaoEstacao() {
                         {estacao?.dados ? (
                             <div>
                                 {estacao.dados.map((item) => (
-                                    <li style={{ listStyle: 'none' }} key={item.id}>
-                                        <div className="parametrosview">
-                                                <p>- <strong>{item.parametro.tipo}</strong></p>
-                                            <Button onClick={() => confirm3(item.id)} icon="pi pi-trash" rounded text severity="danger" aria-label="Excluir" />
+                                    <Accordion key={item.id} multiple activeIndex={[1]}>
+                                    <AccordionTab header={
+                                        <div className="flex align-items-center">
+                                        <span className="vertical-align-middle">{item.parametro.tipo}</span>
+                                        <div className="ml-auto">
+                                            <Button onClick={() => confirm3(item.id)} icon="pi pi-trash" rounded text severity="danger" aria-label="Excluir"  />
+
                                         </div>
-                                    </li>
+                                    </div>
+                                        }  >
+                                        <div className="parametrosview">
+                                        <i className="pi pi-info-circle" style={{ fontSize: '1.4rem' }}></i>
+
+                                        <p>
+                                            Descrição:  {item.parametro.descricao}
+                                        </p>
+                                        </div>
+                                    </AccordionTab>
+                                </Accordion>
                                 ))}
                             </div>
                         ) : (
                             <p>Nenhum dado encontrado.</p>
                         )}
 
-
-
-                        <div className="grafico">
-                            <Chart props={{nome: estacao?.estacao.nome, series: medidas}} />
-                        </div>
+                        {medidas.map((medida,index)=>(
+                            <div className="grafico" key={index}>
+                            <Chart props={{name: medida.name, data: medida.data}} />
+                            </div>
+                        ))}
+                        
                     </div>
                 </div>
             </S.View>
