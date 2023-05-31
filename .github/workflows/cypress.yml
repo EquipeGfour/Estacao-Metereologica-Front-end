@@ -1,20 +1,11 @@
-name: Testes do Cypress
-
+name: Add Action
 on:
-  push:
-    branches: [Dev]
-      
-
+ push:
+   branches:
+     - main
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout do código-fonte
-        uses: actions/checkout@v2
-
-      - name: Instalar dependências
-        run: npm i
-
-      - name: Executar testes do Cypress
-        run: npm run cypress:open
+ Cypress-Test:
+   runs-on: ubuntu-latest
+   steps:
+     - name: Checkout GitCode
+       uses: actions/checkout@v2
