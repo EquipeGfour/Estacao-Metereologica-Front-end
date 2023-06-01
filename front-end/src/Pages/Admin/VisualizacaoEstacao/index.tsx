@@ -14,6 +14,8 @@ import Mapa from "../../../Components/Map";
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import Chart from "../../../Components/Chart";
 import { Accordion, AccordionTab } from 'primereact/accordion';
+import axios from 'axios';
+
 
 interface EstacaoDados {
     estacao: {
@@ -87,6 +89,9 @@ function VizualizacaoEstacao() {
     const { id } = useParams();
     const navigate = useNavigate();
     const toast = useRef<Toast>(null);
+    const [medida, setMedida
+    ] = useState<EstacaoDados[]>([])
+    
 
     const onSubmit: SubmitHandler<FieldValues> = useCallback(async (data) => {
         editarEstacao(data as EstacaoDados);
@@ -264,6 +269,20 @@ function VizualizacaoEstacao() {
             });
     }, []);
 
+
+
+    const buscarMedida = async () =>{
+        axios.get('http://localhost:5000/medida//buscar/:id').then(
+            response => {            
+                setMedidas(response.data)
+            }
+        )
+    }
+    
+    useEffect(() => {
+        buscarMedida();
+    }, [])
+
     return (
         <>
             <Toast ref={toast} />
@@ -356,7 +375,9 @@ function VizualizacaoEstacao() {
                                         <i className="pi pi-info-circle" style={{ fontSize: '1.4rem' }}></i>
 
                                         <p>
-                                            Descrição:  {item.parametro.descricao}
+                                            <b>Ultima medição:</b>  {}
+                                            <br />
+                                            <b>Descrição:</b>  {item.parametro.descricao}
                                         </p>
                                         </div>
                                     </AccordionTab>
