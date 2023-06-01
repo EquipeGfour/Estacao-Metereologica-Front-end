@@ -1,17 +1,28 @@
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
-import { useEffect, useState } from 'react'
 
-function Chart({props}:any) {
+function Chart({ props }: any) {
 
     const options = {
         chart: {
             type: 'line'
         },
         title: {
-            text: props.nome
+            text: props.name
         },
-        series: props.series
+        xAxis: {
+            type: 'datetime',
+            categories:props.data?.x || [],
+        },
+        yAxis: {
+            title: {
+                text: props.data?.unidade_medida
+            }
+        },
+        series:[{
+            name: props.name,
+            data:props.data?.y || []
+        }]
     }
 
     return (
