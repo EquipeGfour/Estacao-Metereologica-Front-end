@@ -67,7 +67,8 @@ interface EstacaoDados {
 }
 interface Medida {
     name: string,
-    data: number[]
+    data: number[],
+    unidade_medida: string
 }
 
 
@@ -147,27 +148,30 @@ function VizualizacaoEstacao() {
 
     const getAllParametros = async () => {
         const response = await api.get<EstacaoDados[]>(`/parametro/buscar-parametro`);
-        console.log(response)
         setParametros(response.data);
         setParametros2(response.data);
     }
 
     const getAllEstacaoMedidas = async () => {
-        const response = await api.get<Medida[]>(`/medida/buscar-estacaoMedida/${id}`)       
-        const dados =  response.data.map((medida:Medida)=>{
-            const valores = medida.data.reduce((acc: any, cur: any) => {
-                acc.x.push(formatDate(cur.date))
-                acc.y.push(cur.value)
-                return acc
-            }, { x: [], y: [] })
-            return {
-                name:medida.name,
-                data:valores
-            } as Medida
-        })
-        
+        const response = await api.get<Medida[]>(`/medida/buscar-estacaoMedida/${id}`);
+        console.log(response);
+        const dados = response.data.map((medida: Medida) => {
+          const valores = medida.data.reduce((acc: any, cur: any) => {
+            acc.x.push(formatDate(cur.date));
+            acc.y.push(cur.value);
+            acc.unidade_medida = cur.unidade_medida; // Incluir a propriedade unidade_medida
+            return acc;
+          }, { x: [], y: [], unidade_medida: '' }); // Inicializar unidade_medida como uma string vazia
+          return {
+            name: medida.name,
+            data: valores,
+          } as Medida;
+        });
         setMedidas(dados);
-    }
+        console.log(dados);
+      };
+      
+    
     const formatDate = (data:string) => {
         const [formated,] = new Date(data).toLocaleString("pt-BR", {timeZone: "America/Sao_Paulo"}).split(',')
         return formated;
@@ -287,7 +291,7 @@ function VizualizacaoEstacao() {
                                     <Button icon="pi pi-pencil" onClick={() => setVisible(true)} label="Editar Estação" />
                                     <Button icon="pi pi-plus" onClick={() => setVisible2(true)} label="Adicionar Parâmetros" />
                                     <Button icon="pi pi-exclamation-triangle" onClick={() => setVisible3(true)} label="Vincular Alerta" />
-                                    <Button name="excluirEstacao" onClick={confirm2} icon="pi pi-trash" label="Excluir Estação" />
+                                    <Button onClick={confirm2} icon="pi pi-trash" label="Excluir Estação" />
                                     <h2>Localização:</h2>
                                     <h3>Latitude: {estacao?.estacao.latitude}</h3>
                                     <h3>Longitude: {estacao?.estacao.longitude}</h3>
@@ -369,7 +373,7 @@ function VizualizacaoEstacao() {
 
                         {medidas.map((medida,index)=>(
                             <div className="grafico" key={index}>
-                            <Chart props={{name: medida.name, data: medida.data}} />
+                            <Chart props={{name: medida.name, data: medida.data ,tipo: medida.unidade_medida}} />
                             </div>
                         ))}
                         
