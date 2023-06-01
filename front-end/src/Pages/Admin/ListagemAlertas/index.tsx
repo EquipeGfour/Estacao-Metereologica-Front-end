@@ -16,8 +16,8 @@ interface Alerta {
     id: number;
     nome: string;
     mensagem: string;
-    tipo:string;
-    valor:string
+    tipo: string;
+    valor: string
 }
 function ListagemAlertas() {
     const toast = useRef<Toast>(null);
@@ -28,6 +28,7 @@ function ListagemAlertas() {
     const onSubmit: SubmitHandler<FieldValues> = useCallback(async (data) => {
         setAlertas(data as Alerta);
     }, []);
+    const [globalFilter, setGlobalFilter] = useState(null);
 
     const accept = () => {
         deleteSelectedAlertas()
@@ -52,11 +53,11 @@ function ListagemAlertas() {
     async function getAllAlertas() {
         const response = await api.get<Alerta[]>("/alerta/buscar");
         setAlertas(response.data);
-        const dados = response.data.map(alerta=>{
+        const dados = response.data.map(alerta => {
             if (alerta.tipo === 'acima') {
                 alerta.tipo = '>'
             }
-            if(alerta.tipo === 'abaixo') {
+            if (alerta.tipo === 'abaixo') {
                 alerta.tipo = '<'
             }
         })
@@ -77,8 +78,8 @@ function ListagemAlertas() {
             .put(`/alerta/editar/${newData.id}`, {
                 nome: newData.nome,
                 mensagem: newData.mensagem,
-                tipo:newData.tipo,
-                valor:newData.valor
+                tipo: newData.tipo,
+                valor: newData.valor
             })
             .then(function (response) {
                 if (response) {
@@ -126,6 +127,29 @@ function ListagemAlertas() {
         setSelectedAlertas(null);
     };
 
+    const setfilter = (e: any) => {
+        if (e === "") {
+            setGlobalFilter(null);
+        } else {
+            setGlobalFilter(e);
+        }
+    };
+    const header = () => {
+        return (
+            <div className="table-header">
+                    <span className="p-input-icon-left">
+                        <i className="pi pi-search" />
+                        <InputText 
+                            type="search" className='aumentar'
+                            onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                setfilter(e.target.value)
+                            }
+                            placeholder="Pesquisar..."
+                        />
+                    </span>
+            </div>
+        );
+    };
     return (
         <>
             <S.ListagemAlertas>
@@ -136,16 +160,10 @@ function ListagemAlertas() {
                     </header>
                     <main>
                         <h1>Alertas</h1>
-                        <div className='pesquisa'>
-                            <span className="p-input-icon-left">
-                                <i className="pi pi-search" />
-                                <InputText placeholder="Pesquisar" className='barra' />
-                            </span>
-                        </div>
                         <div className='conteudo'>
-                        <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
+                            <Toolbar left={leftToolbarTemplate}></Toolbar>
                             <form onSubmit={handleSubmit(onSubmit)}>
-                                <DataTable value={alertas} editMode="row" dataKey="id" onRowEditComplete={onRowEditComplete} tableStyle={{ minWidth: '50rem' }} type='submit' selection={selectedAlertas} onSelectionChange={(e) => setSelectedAlertas(e.value)}>
+                                <DataTable value={alertas} editMode="row" header={header} globalFilter={globalFilter} dataKey="id" onRowEditComplete={onRowEditComplete} tableStyle={{ minWidth: '50rem' }} type='submit' selection={selectedAlertas} onSelectionChange={(e) => setSelectedAlertas(e.value)}>
                                     <Column selectionMode="multiple" style={{ width: '1%' }} exportable={false}></Column>
                                     <Column field="nome" header="Nome" editor={(options) => textEditor(options)} style={{ width: '25%' }}></Column>
                                     <Column field="mensagem" header="Mensagem" editor={(options) => textEditor(options)} style={{ width: '30%' }}></Column>
