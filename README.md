@@ -33,3 +33,14 @@ npm install
 npm start
 ```
 <br>
+
+### Explicação da estrutura das pastas
+
+| Pasta                                                       | Definição                                                                       |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| :open_file_folder: src                               | arquivos com código fonte do projeto |
+| :open_file_folder: src/Components | Arquivos para reutilização de códigos (Componentes) |
+| :open_file_folder: src/Pages | Telas da aplicação |
+| :open_file_folder: src/Routes | Rotas da aplicação |
+
+</br>
