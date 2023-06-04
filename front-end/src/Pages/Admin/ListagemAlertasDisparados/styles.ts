@@ -19,6 +19,18 @@ section{
                 width: 110rem;
             }
         }
+        .pesquisa{
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            .barra{
+                width: 110rem;
+            }
+        }
+        .aumentar{
+            width: 117rem;
+        }
     }
 }
 `

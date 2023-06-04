@@ -19,23 +19,48 @@ import { log } from 'console';
 
 function ListagemMedidas() {
     const [ medidas, setMedidas] = useState([])
+    const [globalFilter, setGlobalFilter] = useState(null);
 
     const buscarMedidas = async () =>{
         axios.get('http://localhost:5000/medida/buscar').then(
             response => {            
-                setMedidas(response.data)
+                const dados = response.data.map((m:any) => {
+                    m.unixtime = new Date(m.unixtime).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })
+                    return m
+                })
+                setMedidas(dados)                
             }
         )
     }
-    
+    const setfilter = (e: any) => {
+        if (e === "") {
+            setGlobalFilter(null);
+        } else {
+            setGlobalFilter(e);
+        }
+    };
+    const header = () => {
+        return (
+            <div className="table-header">
+                    <span className="p-input-icon-left">
+                        <i className="pi pi-search" />
+                        <InputText 
+                            type="search" className='aumentar'
+                            onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                setfilter(e.target.value)
+                            }
+                            placeholder="Pesquisar..."
+                        />
+                    </span>
+            </div>
+        );
+    };
     useEffect(() => {
         buscarMedidas();
     }, [])
 
     return (
         <>
-
-        
         <S.ListagemMedidas>
             <section>
                 <header>      
@@ -43,42 +68,19 @@ function ListagemMedidas() {
                 </header>
                 <main>
                     <h1>Medidas</h1>
-                    <div className='pesquisa'>
-                        <span className="p-input-icon-left">
-                            <i className="pi pi-search" />
-                            <InputText placeholder="Pesquisar" className='barra' />
-                        </span>
-                    <span className="botao">
-                            <Button icon='pi pi-fw pi-filter' label='Filtrar' />
-                    </span>
-                    </div>
                     <div className='conteudo'>
-                    
-                    <DataTable value= {medidas}  tableStyle={{ minWidth: '50rem' }}>
+                    <DataTable header={header} globalFilter={globalFilter} value= {medidas}  tableStyle={{ minWidth: '50rem' }}>
                         <Column field="id" header="Id"></Column>
-                        <Column field="unixtime" header="Unixtime"></Column>
-                        <Column field="valor_medido" header="Valor_Medido"></Column>
-                        <Column field= "id_parametro.tipo" header="Parametro"></Column>
-                        <Column field= "id_estacao.nome" header=" Estação"></Column>
+                        <Column field= "estacao.nome" header="Nome Estação"></Column>
+                        <Column field= "parametro.tipo" header="Parâmetro"></Column>
+                        <Column field="unixtime" header="Data E Hora"></Column>
+                        <Column field="valor_medido" header="Medida"></Column>
                     </DataTable>
                         
                     </div>
-
-
-
-
-
-
-
-
-
-
-
                 </main>
             </section>
         </S.ListagemMedidas>
-            
-           
     </>
     )
 }
