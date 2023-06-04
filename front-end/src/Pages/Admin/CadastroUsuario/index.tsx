@@ -83,8 +83,7 @@ function CadastroUsuarios() {
                                 <br />
                                     <hr  style={{display:'flex',justifyContent:'row',width:"100%"}}/>
                                     <div className="criar-conta">
-                                    <p  style={{paddingTop:14}}>Já possui uma conta ? </p>
-                                    <Button label="Login" onClick={() => navigate(`/`)} className="p-button-outlined w-4" />
+                                    {/* <Button label="Login" onClick={() => navigate(`/`)} className="p-button-outlined" /> */}
                                 </div>
                             </div>
                         </div>
