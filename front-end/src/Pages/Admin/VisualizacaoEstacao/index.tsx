@@ -8,7 +8,7 @@ import NavbarAdmin from "../../../Components/NavbarAdmin";
 import { api } from "../../../service/api";
 import { useNavigate, useParams } from "react-router-dom";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { MultiSelect} from "primereact/multiselect";
+import { MultiSelect } from "primereact/multiselect";
 import { Toast } from 'primereact/toast';
 import Mapa from "../../../Components/Map";
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
@@ -34,15 +34,15 @@ interface EstacaoDados {
             unidade_medida: string;
             fator_conversao: string;
             offset: string;
-            descricao:string
+            descricao: string
         };
     }[];
     Alerta: {
         id: number;
         nome: string;
         mensagem: string;
-        tipo:string;
-        valor:string
+        tipo: string;
+        valor: string
     }[];
     ehp: {
         id: number;
@@ -72,9 +72,17 @@ interface Medida {
     data: number[]
 }
 
+interface UltimaMedida {
+    tipo: string,
+    valor_medido: number,
+    id: number,
+    unixtime: Date,
+    descricao: string,
+    unidade_medida: string;
+}
 
 function VizualizacaoEstacao() {
-
+    const [ultimaMedidas, setUltimaMedidas] = useState<UltimaMedida[]>([])
     const [visible, setVisible] = useState<boolean>(false);
     const [visible2, setVisible2] = useState<boolean>(false);
     const [visible3, setVisible3] = useState<boolean>(false);
@@ -91,7 +99,7 @@ function VizualizacaoEstacao() {
     const toast = useRef<Toast>(null);
     const [medida, setMedida
     ] = useState<EstacaoDados[]>([])
-    
+
 
     const onSubmit: SubmitHandler<FieldValues> = useCallback(async (data) => {
         editarEstacao(data as EstacaoDados);
@@ -106,7 +114,7 @@ function VizualizacaoEstacao() {
     });
     const getAllAlertas = async () => {
         await api.get<EstacaoDados[]>(`/alerta/buscar`).then((res) => {
-            setAlertas(res.data);            
+            setAlertas(res.data);
         }).catch((error) => {
             console.log(error);
         })
@@ -158,23 +166,23 @@ function VizualizacaoEstacao() {
     }
 
     const getAllEstacaoMedidas = async () => {
-        const response = await api.get<Medida[]>(`/medida/buscar-estacaoMedida/${id}`)       
-        const dados =  response.data.map((medida:Medida)=>{
+        const response = await api.get<Medida[]>(`/medida/buscar-estacaoMedida/${id}`)
+        const dados = response.data.map((medida: Medida) => {
             const valores = medida.data.reduce((acc: any, cur: any) => {
                 acc.x.push(formatDate(cur.date))
                 acc.y.push(cur.value)
                 return acc
             }, { x: [], y: [] })
             return {
-                name:medida.name,
-                data:valores
+                name: medida.name,
+                data: valores
             } as Medida
         })
-        
+
         setMedidas(dados);
     }
-    const formatDate = (data:string) => {
-        const [formated,] = new Date(data).toLocaleString("pt-BR", {timeZone: "America/Sao_Paulo"}).split(',')
+    const formatDate = (data: string) => {
+        const [formated,] = new Date(data).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }).split(',')
         return formated;
     }
     useEffect(() => {
@@ -233,7 +241,7 @@ function VizualizacaoEstacao() {
                 console.log(error);
             })
     };
-    
+
 
 
 
@@ -271,16 +279,17 @@ function VizualizacaoEstacao() {
 
 
 
-    const buscarMedida = async () =>{
-        axios.get('http://localhost:5000/medida//buscar/:id').then(
-            response => {            
-                setMedidas(response.data)
+    const buscarUltimaMedida = async () => {
+        api.get(`/medida/buscar-ultimos-registros/${id}`).then(
+            response => {
+                setUltimaMedidas(response.data)
+                console.log(response.data);
             }
         )
     }
-    
+
     useEffect(() => {
-        buscarMedida();
+        buscarUltimaMedida();
     }, [])
 
     return (
@@ -299,7 +308,7 @@ function VizualizacaoEstacao() {
                         </div>
                         <div className='container'>
                             <div className="map">
-                                <Mapa latitude={parseFloat(estacao?.estacao.latitude || "0")} longitude={parseFloat(estacao?.estacao.longitude || "0")}/>  
+                                <Mapa latitude={parseFloat(estacao?.estacao.latitude || "0")} longitude={parseFloat(estacao?.estacao.longitude || "0")} />
                             </div>
                             <div className="card flex justify-content-center">
                                 <div className='botaoEditar'>
@@ -360,40 +369,38 @@ function VizualizacaoEstacao() {
                         <p className="h2"><strong>Parâmetros:</strong></p>
                         {estacao?.dados ? (
                             <div>
-                                {estacao.dados.map((item) => (
+                                {ultimaMedidas.map((item) => (
                                     <Accordion key={item.id} multiple activeIndex={[1]}>
-                                    <AccordionTab header={
-                                        <div className="flex align-items-center">
-                                        <span className="vertical-align-middle">{item.parametro.tipo}</span>
-                                        <div className="ml-auto">
-                                            <Button onClick={() => confirm3(item.id)} icon="pi pi-trash" rounded text severity="danger" aria-label="Excluir"  />
-
-                                        </div>
-                                    </div>
+                                        <AccordionTab header={
+                                            <div className="flex align-items-center">
+                                                <span className="vertical-align-middle">{item.tipo}</span>
+                                                <div className="ml-auto">
+                                                    <Button onClick={() => confirm3(item.id)} icon="pi pi-trash" rounded text severity="danger" aria-label="Excluir" />
+                                                </div>
+                                            </div>
                                         }  >
-                                        <div className="parametrosview">
-                                        <i className="pi pi-info-circle" style={{ fontSize: '1.4rem' }}></i>
-
-                                        <p>
-                                            <b>Ultima medição:</b>  {}
-                                            <br />
-                                            <b>Descrição:</b>  {item.parametro.descricao}
-                                        </p>
-                                        </div>
-                                    </AccordionTab>
-                                </Accordion>
+                                            <div className="parametrosview">
+                                                <i className="pi pi-info-circle" style={{ fontSize: '1.4rem' }}></i>
+                                                <p>
+                                                    <b>Ultima medição:</b> {item.valor_medido} {item.unidade_medida}
+                                                    <br />
+                                                    <b>Descrição:</b>  {item.descricao}
+                                                </p>
+                                            </div>
+                                        </AccordionTab>
+                                    </Accordion>
                                 ))}
                             </div>
                         ) : (
                             <p>Nenhum dado encontrado.</p>
                         )}
 
-                        {medidas.map((medida,index)=>(
+                        {medidas.map((medida, index) => (
                             <div className="grafico" key={index}>
-                            <Chart props={{name: medida.name, data: medida.data}} />
+                                <Chart props={{ name: medida.name, data: medida.data }} />
                             </div>
                         ))}
-                        
+
                     </div>
                 </div>
             </S.View>
