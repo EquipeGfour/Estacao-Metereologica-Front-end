@@ -122,4 +122,10 @@ font-size: 35px;
     padding: 5px;
 }
 
+.medicaoParametro{
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+}
+
 `
