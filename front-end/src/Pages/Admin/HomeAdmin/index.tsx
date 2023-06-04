@@ -24,24 +24,24 @@ function Adm_Home() {
                             <h1>Estação</h1>
                             <i className="pi pi-home" style={{ fontSize: '6rem' }}></i>
                             <div className="button">
-                                <Button label="Cadastrar Estação" outlined onClick={() => navigate(`/cadastro-estacao`)} />
-                                <Button label="Listagem de Estações" outlined onClick={() => navigate(`/listagem-estacao`)} />
+                                <Button name="cadastrarEstacao" label="Cadastrar Estação" outlined onClick={() => navigate(`/cadastro-estacao`)} />
+                                <Button name="listagemEstacao" label="Listagem de Estações" outlined onClick={() => navigate(`/listagem-estacao`)} />
                             </div>
                         </div>
                         <div className="parametros">
                             <h1>Parametro</h1>
                             <i className="pi pi-bolt" style={{ fontSize: '6rem' }}></i>
                             <div className="button">
-                                <Button label="Cadastro de Parâmetros" outlined onClick={() => navigate(`/cadastro-parametro`)} />
-                                <Button label="Listagem de Parâmetros" outlined onClick={() => navigate(`/listagem-parametros`)} />
+                                <Button name="cadastrarParametro" label="Cadastro de Parâmetros" outlined onClick={() => navigate(`/cadastro-parametro`)} />
+                                <Button name="listagemParametro" label="Listagem de Parâmetros" outlined onClick={() => navigate(`/listagem-parametros`)} />
                             </div>
                         </div>
                         <div className="alertas">
                             <h1>Alerta</h1>
                             <i className="pi pi-exclamation-triangle" style={{ fontSize: '6rem' }}></i>
                             <div className="button">
-                                <Button label="Cadastro de Alertas" outlined onClick={() => navigate(`/cadastro-alerta`)} />
-                                <Button label="Listagem de Alertas" outlined onClick={() => navigate(`/listagem-alertas`)} />
+                                <Button name="cadastrarAlerta" label="Cadastro de Alertas" outlined onClick={() => navigate(`/cadastro-alerta`)} />
+                                <Button name="listagemAlerta" label="Listagem de Alertas" outlined onClick={() => navigate(`/listagem-alertas`)} />
                             </div>
                         </div>
                     </div>

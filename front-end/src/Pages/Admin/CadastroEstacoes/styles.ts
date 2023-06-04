@@ -101,6 +101,9 @@ section{
                         width: 100%;
                     }
                 }
+                .aumentar{
+            width: 117rem;
+        }
             }
         } 
     }
