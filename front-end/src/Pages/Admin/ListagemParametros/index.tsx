@@ -30,6 +30,7 @@ function ListagemParametros() {
     const onSubmit: SubmitHandler<FieldValues> = useCallback(async (data) => {
         setParametros(data as Parametro);
     }, []);
+    const [globalFilter, setGlobalFilter] = useState(null);
 
     const accept = () => {
         deleteSelectedParametros()
@@ -120,6 +121,29 @@ function ListagemParametros() {
         })
         setSelectedParametros(null);
     };
+    const setfilter = (e: any) => {
+        if (e === "") {
+            setGlobalFilter(null);
+        } else {
+            setGlobalFilter(e);
+        }
+    };
+    const header = () => {
+        return (
+            <div className="table-header">
+                    <span className="p-input-icon-left">
+                        <i className="pi pi-search" />
+                        <InputText 
+                            type="search" className='aumentar'
+                            onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                setfilter(e.target.value)
+                            }
+                            placeholder="Pesquisar..."
+                        />
+                    </span>
+            </div>
+        );
+    };
 
 
     return (
@@ -132,16 +156,11 @@ function ListagemParametros() {
                     </header>
                     <main>
                         <h1>Parâmetros</h1>
-                        <div className='pesquisa'>
-                            <span className="p-input-icon-left">
-                                <i className="pi pi-search" />
-                                <InputText placeholder="Pesquisar" className='barra' />
-                            </span>
-                        </div>
+
                         <div className='conteudo'>
                             <Toolbar  left={leftToolbarTemplate}></Toolbar>
                             <form onSubmit={handleSubmit(onSubmit)}>
-                                <DataTable value={parametros} editMode="row" dataKey="id" onRowEditComplete={onRowEditComplete} tableStyle={{ minWidth: '50rem' }} type='submit' selection={selectedParametros} onSelectionChange={(e) => setSelectedParametros(e.value)}>
+                                <DataTable value={parametros} editMode="row" header={header} globalFilter={globalFilter} dataKey="id" onRowEditComplete={onRowEditComplete} tableStyle={{ minWidth: '50rem' }} type='submit' selection={selectedParametros} onSelectionChange={(e) => setSelectedParametros(e.value)}>
                                     <Column selectionMode="multiple" exportable={false}></Column>
                                     <Column field="tipo" header="Tipo" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
                                     <Column field="descricao" header="Descrição" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
