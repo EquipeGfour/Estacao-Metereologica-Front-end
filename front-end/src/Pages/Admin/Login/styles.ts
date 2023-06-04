@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 
 export const Container = styled.div`
 section{
+    
     color: #737479;
     p{
         margin-top: 0px;
@@ -31,7 +32,6 @@ section{
             box-shadow: 3px 1px 2px 2px gray, -1px 0 0.4px gray;
             background-color: #ffffff;
             width: 500px;
-            hight: 700px;
             .campos{
                 display: flex;
                 flex-direction: column;
@@ -72,10 +72,14 @@ section{
 
                 }
                 small{
+                    margin: 0 auto;
                     margin-top: 5px ;
                     display: flex;
                     align-items: left;
                     color: #5652C7;
+                }
+                .ajuste-link{
+                    margin-left: 5px !important;
                 }
                 
                 .parametros-e-alertas{

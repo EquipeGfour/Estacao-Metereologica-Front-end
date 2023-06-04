@@ -4,23 +4,20 @@ export const ListagemEstacao = styled.div`
 section{
     main{
         h1{
-            margin-top:0px;
+            margin-top:10px;
             display:flex;
             justify-content:center;
             color:#5652C7;
             font-size: 40px;
         }
         .pesquisa{
-            margin-left: 5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 2rem;
             display: flex;
             flex-direction: row;
-            .barra{
-                width: 100rem;
-            }
-            .botao{
-                margin-left: 1rem;
-            }
+            justify-content: start;
+        }
+        .aumentar{
+            width: 117rem;
         }
     }
 }

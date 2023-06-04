@@ -31,7 +31,6 @@ section{
             box-shadow: 3px 1px 2px 2px gray, -1px 0 0.4px gray;
             background-color: #ffffff;
             width: 500px;
-            hight: 700px;
             .campos{
                 display: flex;
                 flex-direction: column;
@@ -107,6 +106,11 @@ section{
                     Button{
                         width: 100%;
                     }
+                }.p-button.p-button-outlined {
+                    width: 100%;
+                    background-color: transparent;
+                    color: #6366F1;
+                    border: 1px solid;
                 }
                 .linha{
                     margin-top: 18px ;

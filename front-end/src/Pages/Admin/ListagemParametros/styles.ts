@@ -19,6 +19,9 @@ section{
                 width: 110rem;
             }
         }
+        .aumentar{
+            width: 117rem;
+        }
     }
 }
 `

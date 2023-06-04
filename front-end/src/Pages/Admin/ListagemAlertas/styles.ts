@@ -14,11 +14,12 @@ section{
             margin-bottom: 2rem;
             display: flex;
             flex-direction: row;
-            justify-content: center;
-            .barra{
-                width: 110rem;
-            }
+            justify-content: start;
         }
+        .aumentar{
+            width: 117rem;
+        }
+
     }
 }
 `

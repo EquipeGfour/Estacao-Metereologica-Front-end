@@ -16,7 +16,7 @@ function Chart({ props }: any) {
         },
         yAxis: {
             title: {
-                text: props.name
+                text: props.data?.unidade_medida
             }
         },
         series:[{
