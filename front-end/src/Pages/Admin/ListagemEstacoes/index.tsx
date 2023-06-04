@@ -35,11 +35,10 @@ function ListagemEstacao() {
     }, []);
 
     const header = (
-        <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-            <span className="p-input-icon-left">
-                <i className="pi pi-search" />
-                <InputText type="search" placeholder="Pesquisar" onInput={(e) => {const target = e.target as HTMLInputElement; setGlobalFilter(target.value);}}/>
-            </span>
+        <div className="table-header">
+        <span className="p-input-icon-left">
+            <i className="pi pi-search" />
+            <InputText type="search" placeholder="Pesquisar" className='aumentar' onInput={(e) => {const target = e.target as HTMLInputElement; setGlobalFilter(target.value);}}/>        </span>
         </div>
     );
 
