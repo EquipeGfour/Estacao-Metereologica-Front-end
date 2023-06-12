@@ -1,0 +1,57 @@
+name: Add Action
+on:
+ push:
+   branches:
+     - integracao
+jobs:
+ Selenium-Test:
+   runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v2
+
+      - name: Configurar ambiente Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.10.7
+  
+      - name: Instalar dependências Python
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # - name: Instalar dependências Node.js
+      #   run: cd front-end && npm install
+
+      # - name: Rodar projeto
+      #   run: cd front-end && nohup npm start > /dev/null 2>&1 &
+
+      # - name: rodar o selenium - teste de cadastro
+      #   run: python CadastroEstacoes/cadastro_estacoes.py
+
+      # - name: rodar o selenium - deletar_estacao.py
+      #   run: python CadastroEstacoes/deletar_estacao.py
+
+      # - name: rodar o selenium - visualizar_estacao.py
+      #   run: python CadastroEstacoes/visualizar_estacao.py
+
+
+      - name: Executar o Selenium
+        run: |
+          export DISPLAY=:99  
+          Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+          python CadastroEstacoes/visualizar_estacao.py 
+
+      - name: Executar o Selenium
+        run: |
+          export DISPLAY=:99  
+          Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+          python CadastroEstacoes/cadastro_estacoes.py
+    
+        - name: Executar o Selenium
+        run: |
+          export DISPLAY=:99  
+          Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+          python CadastroEstacoes/deletar_estacao.py
+
+
