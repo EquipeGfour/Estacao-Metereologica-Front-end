@@ -1,11 +1,10 @@
-name: Add Action
 on:
- push:
-   branches:
-     - integracao
+  push:
+    branches:
+      - integracao
 jobs:
- Selenium-Test:
-   runs-on: ubuntu-latest
+  Selenium-Test:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout do repositório
         uses: actions/checkout@v2
