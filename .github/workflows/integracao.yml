@@ -46,11 +46,12 @@ jobs:
           export DISPLAY=:99  
           Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
           python CadastroEstacoes/cadastro_estacoes.py
-    
-        - name: Executar o Selenium
+
+      - name: Executar o Selenium
         run: |
           export DISPLAY=:99  
           Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
           python CadastroEstacoes/deletar_estacao.py
+
 
 
