@@ -19,11 +19,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # - name: Instalar dependências Node.js
-      #   run: cd front-end && npm install
+      - name: Instalar dependências Node.js
+        run: cd front-end && npm install
 
-      # - name: Rodar projeto
-      #   run: cd front-end && nohup npm start > /dev/null 2>&1 &
+      - name: Rodar projeto
+        run: cd front-end && nohup npm start > /dev/null 2>&1 &
 
       # - name: rodar o selenium - teste de cadastro
       #   run: python CadastroEstacoes/cadastro_estacoes.py
